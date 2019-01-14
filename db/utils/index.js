@@ -28,7 +28,6 @@ module.exports = {
   },
 
   setArticleIds(articles, object) {
-    // have the column belongs to, change to article id
     return articles.map((article) => {
       article.article_id = object[article.belongs_to];
       delete article.belongs_to;

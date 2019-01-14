@@ -1,5 +1,5 @@
 \c nc_knews_dev
 SELECT * FROM topics;
 SELECT * FROM users;
-SELECT * FROM articles;
-SELECT * FROM comments;
+SELECT article_id, comment_id, username FROM comments;
+SELECT title, topic, username FROM articles;
