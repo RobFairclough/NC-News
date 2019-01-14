@@ -8,7 +8,7 @@ const connection = require('../db/connection');
 const request = supertest(app);
 
 describe('/api', () => {
-  before(() => connection.migrate
+  beforeEach(() => connection.migrate
     .rollback()
     .then(() => connection.migrate.latest())
     .then(() => connection.seed.run()));
@@ -36,7 +36,16 @@ describe('/api', () => {
           expect(body.topic).to.eql([testObj]);
         });
     });
-    it('POST request at /topics should only accept the slug if unique and when failing should respond status 422', () => {});
+    it('POST request at /topics should only accept the slug if unique and when failing should respond status 422', () => {
+      const testObj = { slug: 'mitch', description: 'duplicate slug' };
+      return request
+        .post('/api/topics')
+        .send(testObj)
+        .expect(422)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Key (slug)=(mitch) already exists.');
+        });
+    });
     it('POST request at /topics should not accept the request if missing a description', () => {
       const testObj = { slug: 'test' };
       return request

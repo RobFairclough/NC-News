@@ -12,7 +12,8 @@ module.exports = {
   },
 
   renameColumn(array, before, after) {
-    const newArr = [...array];
+    const newArr = [];
+    array.forEach(obj => newArr.push(JSON.parse(JSON.stringify(obj))));
     newArr.forEach((obj) => {
       obj[after] = obj[before];
       delete obj[before];
@@ -29,7 +30,8 @@ module.exports = {
   },
 
   setArticleIds(articles, object) {
-    const newArr = [...articles];
+    const newArr = [];
+    articles.forEach(article => newArr.push(JSON.parse(JSON.stringify(article))));
     return newArr.map((article) => {
       article.article_id = object[article.belongs_to];
       delete article.belongs_to;
