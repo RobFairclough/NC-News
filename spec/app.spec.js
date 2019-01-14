@@ -7,9 +7,20 @@ const connection = require('../db/connection');
 const request = supertest(app);
 
 describe('/api', () => {
+  after(() => {
+    connection.destroy();
+  });
   it('GET request should respond with a JSON object describing all available endpoints on the API', () => {});
   describe('/topics', () => {
-    it('GET request at /topics should return status 200 and an array of topic objects, each having a slug and description property', () => {});
+    it('GET request at /topics should return status 200 and an array of topic objects, each having a slug and description property', () => request
+      .get('/api/topics')
+      .expect(200)
+      .then(({ body }) => {
+        const obj = body.topics[0];
+        expect(body.topics.length).to.equal(2);
+        expect(obj).to.have.property('slug');
+        expect(obj).to.have.property('description');
+      }));
 
     it('POST request at /topics should accept an object with slug and description properties and respond with status 201, returning the posted topic object', () => {});
     it('POST request at /topics should only accept the slug if unique and when failing should respond status 400', () => {});

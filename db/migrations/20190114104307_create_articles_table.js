@@ -11,10 +11,7 @@ exports.up = function (knex, Promise) {
     table.foreign('topic').references('topics.slug');
     table.text('username').notNullable();
     table.foreign('username').references('users.username');
-    table
-      .date('created_at')
-      .notNullable()
-      .defaultTo(knex.fn.now());
+    table.date('created_at').notNullable();
   });
 };
 
