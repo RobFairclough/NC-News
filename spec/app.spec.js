@@ -37,7 +37,20 @@ describe('/api', () => {
         });
     });
     it('POST request at /topics should only accept the slug if unique and when failing should respond status 422', () => {});
-    it('POST request at /topics should not accept the request if missing a slug or description', () => {});
+    it('POST request at /topics should not accept the request if missing a description', () => {
+      const testObj = { slug: 'test' };
+      return request
+        .post('/api/topics')
+        .send(testObj)
+        .expect(400);
+    });
+    it('POST request at /topics should not accept the request if missing a slug', () => {
+      const testObj = { description: 'test' };
+      return request
+        .post('/api/topics')
+        .send(testObj)
+        .expect(400);
+    });
     describe('/:topic/articles', () => {
       it('GET request should respond status 200 and an array of article objects for a given topic', () => {});
       it('GET request each article object should have the properties: author, title, article_id, votes, comment_count, created_at, topic', () => {});

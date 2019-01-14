@@ -10,6 +10,9 @@ const saveNewTopic = (req, res, next) => {
   const { slug, description } = req.body;
   if (!slug || !description) {
     // 400 bad request
+    res
+      .status(400)
+      .send({ msg: '400 bad request - missing slug or description from request body' });
   } else {
     // else {
     //   connection('topics')
