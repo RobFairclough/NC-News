@@ -12,11 +12,12 @@ module.exports = {
   },
 
   renameColumn(array, before, after) {
-    array.forEach((obj) => {
+    const newArr = [...array];
+    newArr.forEach((obj) => {
       obj[after] = obj[before];
       delete obj[before];
     });
-    return array;
+    return newArr;
   },
 
   getArticleIds(articles) {
@@ -28,7 +29,8 @@ module.exports = {
   },
 
   setArticleIds(articles, object) {
-    return articles.map((article) => {
+    const newArr = [...articles];
+    return newArr.map((article) => {
       article.article_id = object[article.belongs_to];
       delete article.belongs_to;
       return article;

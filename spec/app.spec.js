@@ -3,15 +3,20 @@ const { expect } = require('chai');
 const supertest = require('supertest');
 const app = require('../app');
 const connection = require('../db/connection');
+// const DBconfig = require('../knexfile').test;
 
 const request = supertest(app);
 
 describe('/api', () => {
+  before(() => connection.migrate
+    .rollback()
+    .then(() => connection.migrate.latest())
+    .then(() => connection.seed.run()));
   after(() => {
     connection.destroy();
   });
   it('GET request should respond with a JSON object describing all available endpoints on the API', () => {});
-  describe('/topics', () => {
+  describe.only('/topics', () => {
     it('GET request at /topics should return status 200 and an array of topic objects, each having a slug and description property', () => request
       .get('/api/topics')
       .expect(200)
@@ -21,9 +26,17 @@ describe('/api', () => {
         expect(obj).to.have.property('slug');
         expect(obj).to.have.property('description');
       }));
-
-    it('POST request at /topics should accept an object with slug and description properties and respond with status 201, returning the posted topic object', () => {});
-    it('POST request at /topics should only accept the slug if unique and when failing should respond status 400', () => {});
+    it('POST request at /topics should accept an object with slug and description properties and respond with status 201, returning the posted topic object', () => {
+      const testObj = { slug: 'test', description: 'this is a test' };
+      return request
+        .post('/api/topics')
+        .send(testObj)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.topic).to.eql([testObj]);
+        });
+    });
+    it('POST request at /topics should only accept the slug if unique and when failing should respond status 422', () => {});
     it('POST request at /topics should not accept the request if missing a slug or description', () => {});
     describe('/:topic/articles', () => {
       it('GET request should respond status 200 and an array of article objects for a given topic', () => {});
@@ -45,9 +58,7 @@ describe('/api', () => {
     it('GET request should accept a limit query, defaulting to 10', () => {});
     it('GET request should accept a ?p query for pagination, with pages calculated based on the ?limit query', () => {});
     describe('/:article_id', () => {
-      it(
-        'GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic',
-      );
+      it('GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic', () => {});
       it('GET request should return status 404 if no article exists with that id', () => {});
 
       it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => {});
