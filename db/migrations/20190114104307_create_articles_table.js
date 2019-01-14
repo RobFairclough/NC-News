@@ -4,12 +4,12 @@ exports.up = function (knex, Promise) {
       .increments('article_id')
       .primary()
       .unique();
-    table.string('title').notNullable();
+    table.text('title').notNullable();
     table.text('body').notNullable();
     table.integer('votes').defaultTo(0);
-    table.string('topic').notNullable();
+    table.text('topic').notNullable();
     table.foreign('topic').references('topics.slug');
-    table.string('username').notNullable();
+    table.text('username').notNullable();
     table.foreign('username').references('users.username');
     table
       .date('created_at')
