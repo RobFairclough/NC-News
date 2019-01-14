@@ -61,9 +61,19 @@ describe('/api', () => {
         .expect(400);
     });
     describe('/:topic/articles', () => {
-      it('GET request should respond status 200 and an array of article objects for a given topic', () => {});
-      it('GET request each article object should have the properties: author, title, article_id, votes, comment_count, created_at, topic', () => {});
-      it('GET request each article object should have a comment count property, which is the accumulated count of all comments associated with this article id', () => {});
+      it('GET request should respond status 200 and an array of article objects for a given topic, containing all required properties including an accurate comment count', () => request
+        .get('/api/topics/cats/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(1);
+          expect(body.articles[0]).to.have.property('author');
+          expect(body.articles[0]).to.have.property('title');
+          expect(body.articles[0]).to.have.property('article_id');
+          expect(body.articles[0]).to.have.property('votes');
+          expect(body.articles[0]).to.have.property('created_at');
+          expect(body.articles[0]).to.have.property('topic');
+          expect(body.articles[0].comment_count).to.equal('2');
+        }));
       it('GET request should allow for a ?sort_by query and ?order query, allowing users to sort data by any of the columns - defaulting to date and descending respectively', () => {});
       it('GET request should allow for a ?limit query, defaulting to 10', () => {});
       it('GET request should allow pagination with a ?p query, with pages calculated based on the ?limit query', () => {});

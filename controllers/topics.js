@@ -23,5 +23,23 @@ const saveNewTopic = (req, res, next) => {
       .catch(err => (err.code === '23505' ? res.status(422).send({ msg: err.detail }) : next(err)));
   }
 };
+const sendArticlesByTopic = (req, res, next) => {
+  const { topic } = req.params;
+  connection('articles')
+    .select(
+      'articles.username AS author',
+      'articles.title',
+      'articles.article_id',
+      'articles.votes',
+      'articles.created_at',
+      'articles.topic',
+    )
+    .join('comments', 'articles.article_id', 'comments.article_id')
+    .count('comments.body as comment_count')
+    .groupBy('articles.article_id')
+    .where('articles.topic', topic)
+    .then(articles => res.send({ articles }))
+    .catch(console.log());
+};
 
-module.exports = { sendAllTopics, saveNewTopic };
+module.exports = { sendAllTopics, saveNewTopic, sendArticlesByTopic };
