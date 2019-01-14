@@ -8,8 +8,7 @@ const {
 
 exports.seed = (knex, Promise) => knex('topics')
   .insert(topicData)
-  .then(() => knex('users'))
-  .insert(userData)
+  .then(() => knex('users').insert(userData))
   .then(() => knex('articles')
     .insert(changeTimestampToDate(renameColumn(articleData, 'created_by', 'username')))
     .returning('*'))
