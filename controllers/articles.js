@@ -140,6 +140,17 @@ const sendCommentVotes = (req, res, next) => {
       .catch(next);
   }
 };
+
+const deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  connection('comments')
+    .where('comment_id', comment_id)
+    .del()
+    .then((response) => {
+      if (response === 0) next({ status: 404, msg: 'comment not found' });
+      else res.status(204).send({ msg: 'comment deleted' });
+    });
+};
 module.exports = {
   sendAllArticles,
   sendArticleById,
@@ -148,4 +159,5 @@ module.exports = {
   sendCommentsByArticleId,
   saveNewComment,
   sendCommentVotes,
+  deleteComment,
 };

@@ -325,7 +325,12 @@ describe('/api', () => {
             .send({ inc_votes: 45 })
             .expect(404));
 
-          it('DELETE request should delete given comment by comment_id, and respond with status 204', () => {});
+          it('DELETE request should delete given comment by comment_id, and respond with status 204', () => request
+            .delete('/api/articles/1/comments/2')
+            .expect(204));
+          it('DELETE request return status code 404 if comment_id does not exist', () => request
+            .delete('/api/articles/1/comments/1234')
+            .expect(404));
         });
       });
     });
