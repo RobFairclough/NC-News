@@ -19,7 +19,7 @@ const saveNewTopic = (req, res, next) => {
 const sendArticlesByTopic = (req, res, next) => {
   const { topic } = req.params;
   const {
-    sort_by = 'created_at', order = 'desc', limit = 10, p = 1,
+    sort_by = 'created_at', order, limit = 10, p = 1,
   } = req.query;
   const offset = limit * (p - 1);
   connection('articles')
@@ -36,17 +36,16 @@ const sendArticlesByTopic = (req, res, next) => {
     .groupBy('articles.article_id')
     .limit(limit)
     .offset(offset)
-    .orderBy(sort_by, order)
-    .where('articles.topic', topic)
+    .orderBy(sort_by, order === 'asc' ? order : 'desc')
+    .where(req.params)
     .then((articles) => {
-      if (!articles.length) Promise.reject({ status: 404, msg: `404, no articles for ${topic}` });
-      else {
-        articles.forEach((article) => {
-          // postgres/knex returns dates as js Date objects, this puts back to the intended format
-          article.created_at = JSON.stringify(article.created_at).slice(1, 11);
-        });
-        res.status(200).send({ topic, articles });
-      }
+      // postgres/knex returns dates as js Date objects, this puts back to the intended format
+      articles.forEach((article) => {
+        article.created_at = JSON.stringify(article.created_at).slice(1, 11);
+      });
+      return articles.length
+        ? res.status(200).send({ topic, articles })
+        : Promise.reject({ status: 404, msg: `404, no articles for ${topic}` });
     })
     .catch(next);
 };

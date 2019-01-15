@@ -80,12 +80,70 @@ describe('/api', () => {
           expect(body.articles[0].created_at).to.equal('2018-11-15');
           expect(body.articles[2].created_at).to.equal('1986-11-23');
         }));
-      it('GET request should allow for a ?limit query, defaulting to 10', () => {});
-      it('GET request should allow pagination with a ?p query, with pages calculated based on the ?limit query', () => {});
-      it('GET request should respond status 404 if the topic is not found', () => {});
+      it('GET request should allow for a ?limit query', () => request
+        .get('/api/topics/mitch/articles?limit=1')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(1);
+          expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+        }));
+      it('GET request should allow pagination with a ?p query, with pages calculated based on the ?limit query', () => request
+        .get('/api/topics/mitch/articles?limit=1&p=3')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(1);
+          expect(body.articles[0].title).to.equal("They're not exactly dogs, are they?");
+        }));
+      it('GET request should respond status 404 if the topic has no articles about it', () => request.get('/api/topics/invalidity/articles').expect(404));
+      it('GET request should ignore invalid queries', () => request
+        .get(
+          '/api/topics/cats/articles?limit=theyredogs&sortby=dogbreed&p=pagefour&order=forwards',
+        )
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(1);
+          expect(body.articles[0]).to.have.property('author');
+          expect(body.articles[0].title).to.equal(
+            'UNCOVERED: catspiracy to bring down democracy',
+          );
+          expect(body.articles[0].comment_count).to.equal('2');
+        }));
 
-      it('POST request should return status 201 when successful and respond with the posted article', () => {});
-      it('POST request should only accept an article if given properties title, body and username, returning status 400 if unsuccessful', () => {});
+      it('POST request should return status 201 when successful and respond with the posted article', () => {
+        const testObj = {
+          title: 'cats: can they read?',
+          body: 'probably not, right? but how would we know?',
+          username: 'butter_bridge',
+        };
+        return request
+          .post('/api/topics/cats/articles')
+          .send(testObj)
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.title).to.equal(testObj.title);
+            expect(body.body).to.equal(testObj.body);
+            expect(body.username).to.equal(testObj.username);
+            expect(body.topic).to.equal('cats');
+            expect(body.votes).to.equal(0);
+            expect(body.article_id).to.equal(12);
+            expect(body).to.have.property('created_at');
+          });
+      });
+      it('POST request should only accept an article if given properties title, body and username, returning status 400 if unsuccessful', () => request
+        .get('/api/topics/cats/articles')
+        .send({ title: 'cats: have they stolen my body?', username: 'rogersop' })
+        .expect(400));
+      it('POST request should return status 404 if the topic is not in the db', () => request.get('/api/topics/dogs/articles').send({
+        title: 'The 25 dog-based languages you NEED to learn',
+        username: 'rogersop',
+        body: 'C(anine), Pupthon, Pupy, ChiuauaScript, Doge.js, Dolang, matLabrador',
+      })).expect(404);
+      it('POST request should return 404 if the username is not in the db', () => request.get('/api/topics/cats/articles').send({
+        title:
+            'Why its not a bad thing that cats leave dead birds and rodents in your house, and fun DIY recipes to make use of them!',
+        username: 'notACat',
+        body: 'cook the birb pls',
+      })).expect(404);
     });
   });
 
