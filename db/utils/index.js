@@ -39,8 +39,10 @@ module.exports = {
     });
   },
   reformatDate(arr) {
-    arr.forEach((obj) => {
-      obj.created_at = JSON.stringify(obj.created_at).slice(1, 11);
-    });
+    if (Array.isArray(arr)) {
+      arr.forEach((obj) => {
+        obj.created_at = JSON.stringify(obj.created_at).slice(1, 11);
+      });
+    } else arr.created_at = JSON.stringify(arr.created_at).slice(1, 11);
   },
 };

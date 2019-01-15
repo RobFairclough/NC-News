@@ -195,9 +195,18 @@ describe('/api', () => {
         expect(body.articles[0].article_id).to.equal(3);
         expect(body.articles[1].article_id).to.equal(4);
       }));
-    describe('/:article_id', () => {
-      it('GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic', () => {});
-      it('GET request should return status 404 if no article exists with that id', () => {});
+    describe.only('/:article_id', () => {
+      it('GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic', () => request
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article.article_id).to.equal(1);
+          expect(body.article.author).to.equal('butter_bridge');
+          expect(body.article.title).to.equal('Living in the shadow of a great man');
+          expect(body.article.comment_count).to.equal('13');
+        }));
+      it('GET request should return status 404 if no article exists with that id', () => request.get('/api/articles/8008').expect(404));
+      it('GET request should return status 400 if the article id passed is not an integer', () => request.get('/api/articles/myidisinmyotherpants').expect(400));
 
       it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => {});
       it('PATCH request should respond status code 400 if not given required data', () => {});

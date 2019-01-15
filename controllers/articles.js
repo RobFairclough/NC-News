@@ -29,4 +29,29 @@ const sendAllArticles = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { sendAllArticles };
+const sendArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  connection('articles')
+    .select(
+      'articles.article_id',
+      'articles.username AS author',
+      'title',
+      'articles.votes',
+      'articles.body',
+      'articles.created_at',
+      'topic',
+    )
+    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .count('comment_id AS comment_count')
+    .groupBy('articles.article_id')
+    .where('articles.article_id', article_id)
+    .then(([article]) => {
+      if (article) {
+        reformatDate(article);
+        res.send({ article });
+      } else next({ msg: `404, no article with ID ${article_id}` });
+    })
+    .catch(next);
+};
+
+module.exports = { sendAllArticles, sendArticleById };
