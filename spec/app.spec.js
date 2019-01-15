@@ -195,7 +195,7 @@ describe('/api', () => {
         expect(body.articles[0].article_id).to.equal(3);
         expect(body.articles[1].article_id).to.equal(4);
       }));
-    describe.only('/:article_id', () => {
+    describe('/:article_id', () => {
       it('GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic', () => request
         .get('/api/articles/1')
         .expect(200)
@@ -222,27 +222,30 @@ describe('/api', () => {
         .then(({ body }) => {
           expect(body.article.votes).to.equal(0);
         }));
-      it('PATCH request should respond status code 400 if not given required data', () => {
-        return request
-          .patch('/api/articles/2')
-          .send({ my_vote_is_that_the_article_should_gain_votes_in_the_number_of: 5 })
-          .expect(400);
-      });
-      it('PATCH request should respond status code 400 if given invalid article_id', () => {
-        return request
-          .patch('/api/articles/buspass')
-          .send({ inc_votes: 5 })
-          .expect(400);
-      });
-      it('PATCH request should respond status code 404 if no article with that id exists', () => {
-        return request
-          .patch('/api/articles/12345')
-          .send({ inc_votes: 5 })
-          .expect(404);
-      });
+      it('PATCH request should respond status code 400 if not given required data', () => request
+        .patch('/api/articles/2')
+        .send({ my_vote_is_that_the_article_should_gain_votes_in_the_number_of: 5 })
+        .expect(400));
+      it('PATCH request should respond status code 400 if given invalid article_id', () => request
+        .patch('/api/articles/buspass')
+        .send({ inc_votes: 5 })
+        .expect(400));
+      it('PATCH request should respond status code 404 if no article with that id exists', () => request
+        .patch('/api/articles/12345')
+        .send({ inc_votes: 5 })
+        .expect(404));
 
-      it('DELETE request should delete the article with given id, and respond status 204 and no-content', () => {});
-      it('DELETE request should return status 404 if no article exists with given id', () => {});
+      it('DELETE request should delete the article with given id, and respond status 204 and no-content', () => request
+        .delete('/api/articles/1')
+        .expect(204)
+        .then(() => request.get('/api/articles/1')
+          .expect(404)));
+      it('DELETE request should return status 404 if no article exists with given id', () => request
+        .delete('/api/articles/2113')
+        .expect(404));
+      it('DELETE request should return status 400 if given an invalid article id', () => request
+        .delete('/api/articles/ctrlalt')
+        .expect(400));
       describe('/comments', () => {
         it('GET request should respond with status 200 and an array of comments, each having properties comment_id, votes, created_at, author and body', () => {});
         it('GET request should accept a ?sort_by and ?order query, defaulting to date and descending respectively', () => {});

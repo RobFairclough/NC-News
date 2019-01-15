@@ -72,4 +72,26 @@ const sendArticleVotes = (req, res, next) => {
       .catch(next);
   }
 };
-module.exports = { sendAllArticles, sendArticleById, sendArticleVotes };
+
+const deleteArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  connection('comments')
+    .where('article_id', article_id)
+    .del()
+    .then(() => {
+      connection('articles')
+        .where('article_id', article_id)
+        .del()
+        .then((response) => {
+          if (response === 0) next({ status: 404, msg: 'no articles exist to delete with that id' });
+          else res.status(204).send({ msg: 'delete successful' });
+        });
+    })
+    .catch(next);
+};
+module.exports = {
+  sendAllArticles,
+  sendArticleById,
+  sendArticleVotes,
+  deleteArticle,
+};
