@@ -81,7 +81,7 @@ describe('/api', () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].created_at).to.equal('2018-11-15');
-          expect(body.articles[2].created_at).to.equal('1986-11-23');
+          expect(body.articles[2].created_at).to.equal('2010-11-17');
         }));
       it('GET request should allow for a ?limit query', () => request
         .get('/api/topics/mitch/articles?limit=1')
@@ -91,11 +91,12 @@ describe('/api', () => {
           expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
         }));
       it('GET request should allow pagination with a ?p query, with pages calculated based on the ?limit query', () => request
-        .get('/api/topics/mitch/articles?limit=1&p=3')
+        .get('/api/topics/mitch/articles?limit=1&p=3&sort_by=article_id&order=asc')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles.length).to.equal(1);
-          expect(body.articles[0].title).to.equal("They're not exactly dogs, are they?");
+          expect(body.articles[0].title).to.equal('Eight pug gifs that remind me of mitch');
+          expect(body.articles[0].article_id).to.equal(3);
         }));
       it('GET request should respond status 404 if the topic has no articles about it', () => request.get('/api/topics/invalidity/articles').expect(404));
       it('GET request should ignore invalid queries', () => request
@@ -156,7 +157,7 @@ describe('/api', () => {
     });
   });
 
-  describe.only('/articles', () => {
+  describe('/articles', () => {
     it('GET request should return status 200 and respond with an array of article objects, each object having properties author, title, article_id, body, votes, comment_count, created_at and topic', () => request
       .get('/api/articles')
       .expect(200)

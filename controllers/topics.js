@@ -22,8 +22,8 @@ const sendArticlesByTopic = (req, res, next) => {
       'articles.created_at',
       'articles.topic',
     )
-    .join('comments', 'articles.article_id', 'comments.article_id')
-    .count('comments.body as comment_count')
+    .leftJoin('comments', 'articles.article_id', 'comments.article_id')
+    .count('comments.comment_id as comment_count')
     .groupBy('articles.article_id')
     .limit(limit)
     .offset(offset)
