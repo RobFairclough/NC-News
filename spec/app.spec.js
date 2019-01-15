@@ -15,6 +15,7 @@ describe('/api', () => {
     connection.destroy();
   });
   it('GET request should respond with a JSON object describing all available endpoints on the API', () => {});
+
   describe('/topics', () => {
     it('GET request at /topics should return status 200 and an array of topic objects, each having a slug and description property', () => request
       .get('/api/topics')
@@ -59,6 +60,7 @@ describe('/api', () => {
         .send(testObj)
         .expect(400);
     });
+
     describe('/:topic/articles', () => {
       it('GET request should respond status 200 and an array of article objects for a given topic, containing all required properties including an accurate comment count', () => request
         .get('/api/topics/cats/articles')
@@ -195,6 +197,7 @@ describe('/api', () => {
         expect(body.articles[0].article_id).to.equal(3);
         expect(body.articles[1].article_id).to.equal(4);
       }));
+
     describe('/:article_id', () => {
       it('GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic', () => request
         .get('/api/articles/1')
@@ -246,8 +249,11 @@ describe('/api', () => {
       it('DELETE request should return status 400 if given an invalid article id', () => request
         .delete('/api/articles/ctrlalt')
         .expect(400));
-      describe('/comments', () => {
-        it('GET request should respond with status 200 and an array of comments, each having properties comment_id, votes, created_at, author and body', () => {});
+
+      describe.only('/comments', () => {
+        it('GET request should respond with status 200 and an array of comments, each having properties comment_id, votes, created_at, author and body', () => request.get('/api/articles/1/comments').expect(200).then(({ body }) => {
+          expect(body.comments[0]).to.have.all.keys('comment_id', 'votes', 'created_at', 'author', 'body');
+        }));
         it('GET request should accept a ?sort_by and ?order query, defaulting to date and descending respectively', () => {});
         it('GET request should accept a limit query, defaulting to 10', () => {});
         it('GET request should accept a ?p query for pagination, with pages calculated based on the ?limit query', () => {});

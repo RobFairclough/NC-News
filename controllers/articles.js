@@ -89,9 +89,30 @@ const deleteArticle = (req, res, next) => {
     })
     .catch(next);
 };
+
+const sendCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const {
+    limit = 10, sort_by = 'created_at', p = 1, sort_ascending = false,
+  } = req.query;
+  const offset = limit * (p - 1);
+  connection('comments')
+    .select('comment_id', 'votes', 'created_at', 'username AS author', 'body')
+    .where('article_id', article_id)
+    .limit(limit)
+    .offset(offset)
+    .orderBy(sort_by, sort_ascending === 'true' ? 'asc' : 'desc')
+    .then((comments) => {
+      reformatDate(comments);
+      res.send({ article_id, comments });
+    })
+    .catch(next);
+};
+
 module.exports = {
   sendAllArticles,
   sendArticleById,
   sendArticleVotes,
   deleteArticle,
+  sendCommentsByArticleId,
 };
