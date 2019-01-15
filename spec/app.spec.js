@@ -120,30 +120,36 @@ describe('/api', () => {
           .send(testObj)
           .expect(201)
           .then(({ body }) => {
-            expect(body.title).to.equal(testObj.title);
-            expect(body.body).to.equal(testObj.body);
-            expect(body.username).to.equal(testObj.username);
-            expect(body.topic).to.equal('cats');
-            expect(body.votes).to.equal(0);
-            expect(body.article_id).to.equal(12);
-            expect(body).to.have.property('created_at');
+            expect(body.article.title).to.equal(testObj.title);
+            expect(body.article.body).to.equal(testObj.body);
+            expect(body.article.username).to.equal(testObj.username);
+            expect(body.article.topic).to.equal('cats');
+            expect(body.article.votes).to.equal(0);
+            expect(body.article.article_id).to.equal(13);
+            expect(body.article).to.have.property('created_at');
           });
       });
       it('POST request should only accept an article if given properties title, body and username, returning status 400 if unsuccessful', () => request
-        .get('/api/topics/cats/articles')
+        .post('/api/topics/cats/articles')
         .send({ title: 'cats: have they stolen my body?', username: 'rogersop' })
         .expect(400));
-      it('POST request should return status 404 if the topic is not in the db', () => request.get('/api/topics/dogs/articles').send({
-        title: 'The 25 dog-based languages you NEED to learn',
-        username: 'rogersop',
-        body: 'C(anine), Pupthon, Pupy, ChiuauaScript, Doge.js, Dolang, matLabrador',
-      })).expect(404);
-      it('POST request should return 404 if the username is not in the db', () => request.get('/api/topics/cats/articles').send({
-        title:
-            'Why its not a bad thing that cats leave dead birds and rodents in your house, and fun DIY recipes to make use of them!',
-        username: 'notACat',
-        body: 'cook the birb pls',
-      })).expect(404);
+      it('POST request should return status 404 if the topic is not in the db', () => request
+        .post('/api/topics/dogs/articles')
+        .send({
+          title: 'The 25 dog-based languages you NEED to learn',
+          username: 'rogersop',
+          body: 'C(anine), Pupthon, Pupy, ChiuauaScript, Doge.js, Dolang, matLabrador',
+        })
+        .expect(404));
+      it('POST request should return 404 if the username is not in the db', () => request
+        .post('/api/topics/cats/articles')
+        .send({
+          title:
+              'Why its not a bad thing that cats leave dead birds and rodents in your house, and fun DIY recipes to make use of them!',
+          username: 'notACat',
+          body: 'cook the birb pls',
+        })
+        .expect(404));
     });
   });
 

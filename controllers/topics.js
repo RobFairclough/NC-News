@@ -6,16 +6,6 @@ const sendAllTopics = (req, res, next) => {
     .then(topics => res.send({ topics }));
 };
 
-const saveNewTopic = (req, res, next) => {
-  const { slug, description } = req.body;
-  connection('topics')
-    .insert({ slug, description })
-    .returning('*')
-    .then(([topic]) => {
-      res.status(201).send({ topic });
-    })
-    .catch(next);
-};
 const sendArticlesByTopic = (req, res, next) => {
   const { topic } = req.params;
   const {
@@ -50,4 +40,37 @@ const sendArticlesByTopic = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { sendAllTopics, saveNewTopic, sendArticlesByTopic };
+const saveNewTopic = (req, res, next) => {
+  const { slug, description } = req.body;
+  connection('topics')
+    .insert({ slug, description })
+    .returning('*')
+    .then(([topic]) => {
+      res.status(201).send({ topic });
+    })
+    .catch(next);
+};
+
+const saveNewArticleInTopic = (req, res, next) => {
+  const { topic } = req.params;
+  const { title, username, body } = req.body;
+  connection('articles')
+    .insert({
+      topic,
+      title,
+      username,
+      body,
+    })
+    .returning('*')
+    .then(([article]) => {
+      res.status(201).send({ article });
+    })
+    .catch(next);
+};
+
+module.exports = {
+  sendAllTopics,
+  saveNewTopic,
+  sendArticlesByTopic,
+  saveNewArticleInTopic,
+};
