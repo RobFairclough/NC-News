@@ -3,7 +3,6 @@ const { expect } = require('chai');
 const supertest = require('supertest');
 const app = require('../app');
 const connection = require('../db/connection');
-// const DBconfig = require('../knexfile').test;
 
 const request = supertest(app);
 
@@ -33,7 +32,7 @@ describe('/api', () => {
         .send(testObj)
         .expect(201)
         .then(({ body }) => {
-          expect(body.topic).to.eql([testObj]);
+          expect(body.topic).to.eql(testObj);
         });
     });
     it('POST request at /topics should only accept the slug if unique and when failing should respond status 422', () => {
@@ -74,7 +73,13 @@ describe('/api', () => {
           expect(body.articles[0]).to.have.property('topic');
           expect(body.articles[0].comment_count).to.equal('2');
         }));
-      it('GET request should allow for a ?sort_by query and ?order query, allowing users to sort data by any of the columns - defaulting to date and descending respectively', () => {});
+      it('GET request should allow for a ?sort_by query and ?order query, allowing users to sort data by any of the columns - defaulting to date and descending respectively', () => request
+        .get('/api/topics/mitch/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].created_at).to.equal('2018-11-15');
+          expect(body.articles[2].created_at).to.equal('1986-11-23');
+        }));
       it('GET request should allow for a ?limit query, defaulting to 10', () => {});
       it('GET request should allow pagination with a ?p query, with pages calculated based on the ?limit query', () => {});
       it('GET request should respond status 404 if the topic is not found', () => {});

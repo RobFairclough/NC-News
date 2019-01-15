@@ -8,23 +8,20 @@ const sendAllTopics = (req, res, next) => {
 
 const saveNewTopic = (req, res, next) => {
   const { slug, description } = req.body;
-  if (!slug || !description) {
-    // 400 bad request
-    res
-      .status(400)
-      .send({ msg: '400 bad request - missing slug or description from request body' });
-  } else {
-    connection('topics')
-      .insert({ slug, description })
-      .returning('*')
-      .then((topic) => {
-        res.status(201).send({ topic });
-      })
-      .catch(err => (err.code === '23505' ? res.status(422).send({ msg: err.detail }) : next(err)));
-  }
+  connection('topics')
+    .insert({ slug, description })
+    .returning('*')
+    .then(([topic]) => {
+      res.status(201).send({ topic });
+    })
+    .catch(next);
 };
 const sendArticlesByTopic = (req, res, next) => {
   const { topic } = req.params;
+  const {
+    sort_by = 'created_at', order = 'desc', limit = 10, p = 1,
+  } = req.query;
+  const offset = limit * (p - 1);
   connection('articles')
     .select(
       'articles.username AS author',
@@ -37,9 +34,21 @@ const sendArticlesByTopic = (req, res, next) => {
     .join('comments', 'articles.article_id', 'comments.article_id')
     .count('comments.body as comment_count')
     .groupBy('articles.article_id')
+    .limit(limit)
+    .offset(offset)
+    .orderBy(sort_by, order)
     .where('articles.topic', topic)
-    .then(articles => res.send({ articles }))
-    .catch(console.log());
+    .then((articles) => {
+      if (!articles.length) Promise.reject({ status: 404, msg: `404, no articles for ${topic}` });
+      else {
+        articles.forEach((article) => {
+          // postgres/knex returns dates as js Date objects, this puts back to the intended format
+          article.created_at = JSON.stringify(article.created_at).slice(1, 11);
+        });
+        res.status(200).send({ topic, articles });
+      }
+    })
+    .catch(next);
 };
 
 module.exports = { sendAllTopics, saveNewTopic, sendArticlesByTopic };

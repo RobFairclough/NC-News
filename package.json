@@ -4,6 +4,7 @@
   "description": "## Northcoders News API",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon listen.js",
     "test": "mocha spec",
     "lint": "eslint ./",
     "pre-commit": "npm t",
@@ -37,6 +38,7 @@
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
+    "nodemon": "^1.18.9",
     "husky": "^1.1.4"
   }
 }
