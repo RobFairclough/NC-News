@@ -1,4 +1,5 @@
 const connection = require('../db/connection');
+const { reformatDate } = require('../db/utils');
 
 const sendAllTopics = (req, res, next) => {
   connection('topics')
@@ -30,9 +31,7 @@ const sendArticlesByTopic = (req, res, next) => {
     .where(req.params)
     .then((articles) => {
       // postgres/knex returns dates as js Date objects, this puts back to the intended format
-      articles.forEach((article) => {
-        article.created_at = JSON.stringify(article.created_at).slice(1, 11);
-      });
+      reformatDate(articles);
       return articles.length
         ? res.status(200).send({ topic, articles })
         : Promise.reject({ status: 404, msg: `404, no articles for ${topic}` });

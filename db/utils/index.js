@@ -38,4 +38,9 @@ module.exports = {
       return article;
     });
   },
+  reformatDate(arr) {
+    arr.forEach((obj) => {
+      obj.created_at = JSON.stringify(obj.created_at).slice(1, 11);
+    });
+  },
 };

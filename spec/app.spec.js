@@ -15,7 +15,7 @@ describe('/api', () => {
     connection.destroy();
   });
   it('GET request should respond with a JSON object describing all available endpoints on the API', () => {});
-  describe.only('/topics', () => {
+  describe('/topics', () => {
     it('GET request at /topics should return status 200 and an array of topic objects, each having a slug and description property', () => request
       .get('/api/topics')
       .expect(200)
@@ -65,12 +65,15 @@ describe('/api', () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.articles.length).to.equal(1);
-          expect(body.articles[0]).to.have.property('author');
-          expect(body.articles[0]).to.have.property('title');
-          expect(body.articles[0]).to.have.property('article_id');
-          expect(body.articles[0]).to.have.property('votes');
-          expect(body.articles[0]).to.have.property('created_at');
-          expect(body.articles[0]).to.have.property('topic');
+          expect(body.articles[0]).to.have.all.keys(
+            'author',
+            'title',
+            'article_id',
+            'votes',
+            'created_at',
+            'comment_count',
+            'topic',
+          );
           expect(body.articles[0].comment_count).to.equal('2');
         }));
       it('GET request should allow for a ?sort_by query and ?order query, allowing users to sort data by any of the columns - defaulting to date and descending respectively', () => request
@@ -153,11 +156,44 @@ describe('/api', () => {
     });
   });
 
-  describe('/articles', () => {
-    it('GET request should return status 200 and respond with an array of article objects, each object having properties author, title, article_id, body, votes, comment_count, created_at and topic', () => {});
-    it('GET request should accept a ?sort_by and ?order query, defaulting to date and descending respectively', () => {});
-    it('GET request should accept a limit query, defaulting to 10', () => {});
-    it('GET request should accept a ?p query for pagination, with pages calculated based on the ?limit query', () => {});
+  describe.only('/articles', () => {
+    it('GET request should return status 200 and respond with an array of article objects, each object having properties author, title, article_id, body, votes, comment_count, created_at and topic', () => request
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles[0]).to.have.all.keys(
+          'author',
+          'title',
+          'article_id',
+          'body',
+          'votes',
+          'comment_count',
+          'created_at',
+          'topic',
+        );
+      }));
+    it('GET request should allow for a ?sort_by query and ?order query and a ?limit defaulting to 10, allowing users to sort data by any of the columns - defaulting to date and descending respectively', () => request
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles[0].created_at).to.equal('2018-11-15');
+        expect(body.articles[2].created_at).to.equal('2010-11-17');
+        expect(body.articles.length).to.be.lessThan(11);
+      }));
+    it('GET request should accept a ?limit, ?sort_by and ?order query', () => request
+      .get('/api/articles?sort_by=article_id&order=asc&limit=2')
+      .expect(200)
+      .then(({ body }) => {
+        // expect(body.articles[0].article_id).to.be.lessThan(body.articles[1].article_id);
+        expect(body.articles.length).to.equal(2);
+      }));
+    it('GET request should accept a ?p query for pagination, with pages calculated based on the ?limit query', () => request
+      .get('/api/articles?p=2&limit=2&sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles[0].article_id).to.equal(3);
+        expect(body.articles[1].article_id).to.equal(4);
+      }));
     describe('/:article_id', () => {
       it('GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic', () => {});
       it('GET request should return status 404 if no article exists with that id', () => {});
