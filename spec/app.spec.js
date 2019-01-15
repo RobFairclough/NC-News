@@ -287,16 +287,43 @@ describe('/api', () => {
           .expect(201)
           .then(({ body }) => {
             expect(body.comment.body).to.equal('where me keys?');
-            return request.get('/api/articles/4/comments')
+            return request
+              .get('/api/articles/4/comments')
               .expect(200)
               .then((obj) => {
-                expect(obj.body.comments[obj.body.comments.length - 1].body).to.equal('where me keys?');
+                expect(obj.body.comments[obj.body.comments.length - 1].body).to.equal(
+                  'where me keys?',
+                );
               });
           }));
-        it('POST request should respond status code 400 if not given required data', () => {});
+        it('POST request should respond status code 400 if not given required data', () => request
+          .post('/api/articles/1/comments')
+          .send({ username: 'rogersop', sad: true })
+          .expect(400));
+        it('POST request should respond status code 400 if not given an existing username', () => request
+          .post('/api/articles/1/comments')
+          .send({ username: 'therealdonaldtrump', body: 'this is SAD and so am I' })
+          .expect(400));
+        it('POST request should respond status code 400 if posted to an article ID that doesnt exist', () => request
+          .post('/api/articles/6969/comments')
+          .send({ username: 'icellusedkars', body: 'real comment' })
+          .expect(400));
         describe('/:comment_id', () => {
-          it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => {});
-          it('PATCH request should respond status code 400 if not given required data', () => {});
+          it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => request
+            .patch('/api/articles/1/comments/2')
+            .send({ inc_votes: 6 })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comment.votes).to.equal(20);
+            }));
+          it('PATCH request should respond status code 400 if not given required data', () => request
+            .patch('/api/articles/1/comments/2')
+            .send({ this: 'is a good comment and I like it' })
+            .expect(400));
+          it('PATCH request should respond status code 404 if no comment exists with the given id', () => request
+            .patch('/api/articles/1/comments/246810')
+            .send({ inc_votes: 45 })
+            .expect(404));
 
           it('DELETE request should delete given comment by comment_id, and respond with status 204', () => {});
         });

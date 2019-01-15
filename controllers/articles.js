@@ -124,6 +124,22 @@ const saveNewComment = (req, res, next) => {
     .catch(next);
 };
 
+const sendCommentVotes = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { comment_id } = req.params;
+  if (!inc_votes) next({ status: 400, msg: 'no inc_votes property passed' });
+  else {
+    connection('comments')
+      .where('comment_id', comment_id)
+      .increment('votes', inc_votes)
+      .returning('*')
+      .then(([comment]) => {
+        reformatDate(comment);
+        res.send({ comment });
+      })
+      .catch(next);
+  }
+};
 module.exports = {
   sendAllArticles,
   sendArticleById,
@@ -131,4 +147,5 @@ module.exports = {
   deleteArticle,
   sendCommentsByArticleId,
   saveNewComment,
+  sendCommentVotes,
 };
