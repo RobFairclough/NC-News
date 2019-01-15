@@ -139,15 +139,15 @@ describe('/api', () => {
         .post('/api/topics/cats/articles')
         .send({ title: 'cats: have they stolen my body?', username: 'rogersop' })
         .expect(400));
-      it('POST request should return status 404 if the topic is not in the db', () => request
+      it('POST request should return status 400 if the topic is not in the db', () => request
         .post('/api/topics/dogs/articles')
         .send({
           title: 'The 25 dog-based languages you NEED to learn',
           username: 'rogersop',
           body: 'C(anine), Pupthon, Pupy, ChiuauaScript, Doge.js, Dolang, matLabrador',
         })
-        .expect(404));
-      it('POST request should return 404 if the username is not in the db', () => request
+        .expect(400));
+      it('POST request should return 400 if the username is not in the db', () => request
         .post('/api/topics/cats/articles')
         .send({
           title:
@@ -155,7 +155,7 @@ describe('/api', () => {
           username: 'notACat',
           body: 'cook the birb pls',
         })
-        .expect(404));
+        .expect(400));
     });
   });
 
@@ -245,7 +245,7 @@ describe('/api', () => {
       it('DELETE request should return status 404 if no article exists with given id', () => request.delete('/api/articles/2113').expect(404));
       it('DELETE request should return status 400 if given an invalid article id', () => request.delete('/api/articles/ctrlalt').expect(400));
 
-      describe.only('/comments', () => {
+      describe('/comments', () => {
         it('GET request should respond with status 200 and an array of comments, each having properties comment_id, votes, created_at, author and body', () => request
           .get('/api/articles/1/comments')
           .expect(200)
@@ -337,7 +337,13 @@ describe('/api', () => {
   });
 
   describe('/users', () => {
-    it('GET request should respond status 200 and give an array of user objects with properties username, avatar_url, name', () => {});
+    it('GET request should respond status 200 and give an array of user objects with properties username, avatar_url, name', () => request
+      .get('/api/users')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users[0]).to.have.all.keys('username', 'avatar_url', 'name');
+        expect(body.users.length).to.equal(3);
+      }));
     describe('/users/:username', () => {
       it('GET request should respond status 200 and give a user object with properties username, avatar_url, name', () => {});
       it('GET request should respond status 404 if no users exist by that usename', () => {});
