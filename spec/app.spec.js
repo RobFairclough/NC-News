@@ -281,7 +281,18 @@ describe('/api', () => {
             expect(body.comments[0].comment_id).to.equal(6);
           }));
 
-        it('POST request should accept an object with username and body propeties, and respond with the posted comment and status 201 if successful', () => {});
+        it('POST request should accept an object with username and body propeties, and respond with the posted comment and status 201 if successful', () => request
+          .post('/api/articles/4/comments')
+          .send({ username: 'icellusedkars', body: 'where me keys?' })
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.comment.body).to.equal('where me keys?');
+            return request.get('/api/articles/4/comments')
+              .expect(200)
+              .then((obj) => {
+                expect(obj.body.comments[obj.body.comments.length - 1].body).to.equal('where me keys?');
+              });
+          }));
         it('POST request should respond status code 400 if not given required data', () => {});
         describe('/:comment_id', () => {
           it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => {});

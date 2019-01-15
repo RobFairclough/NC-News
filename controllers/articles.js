@@ -92,6 +92,7 @@ const deleteArticle = (req, res, next) => {
 
 const sendCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
+  // sort_ascending asked for in spec but inconsistent with other GET queries
   const {
     limit = 10, sort_by = 'created_at', p = 1, sort_ascending = false,
   } = req.query;
@@ -109,10 +110,25 @@ const sendCommentsByArticleId = (req, res, next) => {
     .catch(next);
 };
 
+const saveNewComment = (req, res, next) => {
+  const { username, body } = req.body;
+  const { article_id } = req.params;
+  const obj = { username, body, article_id };
+  connection('comments')
+    .insert(obj)
+    .returning('*')
+    .then(([comment]) => {
+      reformatDate(comment);
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
 module.exports = {
   sendAllArticles,
   sendArticleById,
   sendArticleVotes,
   deleteArticle,
   sendCommentsByArticleId,
+  saveNewComment,
 };
