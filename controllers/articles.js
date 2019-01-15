@@ -54,4 +54,22 @@ const sendArticleById = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { sendAllArticles, sendArticleById };
+const sendArticleVotes = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  if (!inc_votes) next({ status: 400, msg: 'PATCH usage: send object {inc_votes: 100}' });
+  else {
+    connection('articles')
+      .where('article_id', '=', article_id)
+      .increment('votes', inc_votes)
+      .returning('*')
+      .then(([article]) => {
+        if (article) {
+          reformatDate(article);
+          res.send({ article });
+        } else next({ status: 404, msg: `article not found with id ${article_id}` });
+      })
+      .catch(next);
+  }
+};
+module.exports = { sendAllArticles, sendArticleById, sendArticleVotes };

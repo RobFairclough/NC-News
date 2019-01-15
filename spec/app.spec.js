@@ -208,8 +208,38 @@ describe('/api', () => {
       it('GET request should return status 404 if no article exists with that id', () => request.get('/api/articles/8008').expect(404));
       it('GET request should return status 400 if the article id passed is not an integer', () => request.get('/api/articles/myidisinmyotherpants').expect(400));
 
-      it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => {});
-      it('PATCH request should respond status code 400 if not given required data', () => {});
+      it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article with votes increased for a positive number', () => request
+        .patch('/api/articles/1')
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article.votes).to.equal(101);
+        }));
+      it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article with votes decreased for a negative number', () => request
+        .patch('/api/articles/1')
+        .send({ inc_votes: -100 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article.votes).to.equal(0);
+        }));
+      it('PATCH request should respond status code 400 if not given required data', () => {
+        return request
+          .patch('/api/articles/2')
+          .send({ my_vote_is_that_the_article_should_gain_votes_in_the_number_of: 5 })
+          .expect(400);
+      });
+      it('PATCH request should respond status code 400 if given invalid article_id', () => {
+        return request
+          .patch('/api/articles/buspass')
+          .send({ inc_votes: 5 })
+          .expect(400);
+      });
+      it('PATCH request should respond status code 404 if no article with that id exists', () => {
+        return request
+          .patch('/api/articles/12345')
+          .send({ inc_votes: 5 })
+          .expect(404);
+      });
 
       it('DELETE request should delete the article with given id, and respond status 204 and no-content', () => {});
       it('DELETE request should return status 404 if no article exists with given id', () => {});
