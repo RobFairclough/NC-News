@@ -325,12 +325,8 @@ describe('/api', () => {
             .send({ inc_votes: 45 })
             .expect(404));
 
-          it('DELETE request should delete given comment by comment_id, and respond with status 204', () => request
-            .delete('/api/articles/1/comments/2')
-            .expect(204));
-          it('DELETE request return status code 404 if comment_id does not exist', () => request
-            .delete('/api/articles/1/comments/1234')
-            .expect(404));
+          it('DELETE request should delete given comment by comment_id, and respond with status 204', () => request.delete('/api/articles/1/comments/2').expect(204));
+          it('DELETE request return status code 404 if comment_id does not exist', () => request.delete('/api/articles/1/comments/1234').expect(404));
         });
       });
     });
@@ -345,8 +341,19 @@ describe('/api', () => {
         expect(body.users.length).to.equal(3);
       }));
     describe('/users/:username', () => {
-      it('GET request should respond status 200 and give a user object with properties username, avatar_url, name', () => {});
-      it('GET request should respond status 404 if no users exist by that usename', () => {});
+      it('GET request should respond status 200 and give a user object with properties username, avatar_url, name', () => request
+        .get('/api/users/butter_bridge')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.user.username).to.equal('butter_bridge');
+          expect(body.user.name).to.equal('jonny');
+          expect(body.user.avatar_url).to.equal(
+            'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg',
+          );
+        }));
+      it('GET request should respond status 404 if no users exist by that usename', () => request
+        .get('/api/users/robfairclough')
+        .expect(404));
     });
   });
 });

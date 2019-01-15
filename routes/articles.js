@@ -15,6 +15,7 @@ articlesRouter.get('/:article_id', sendArticleById);
 articlesRouter.patch('/:article_id', sendArticleVotes);
 articlesRouter.delete('/:article_id', deleteArticle);
 
+// route these into a comments router?
 articlesRouter.get('/:article_id/comments', sendCommentsByArticleId);
 articlesRouter.post('/:article_id/comments', saveNewComment);
 articlesRouter.patch('/:article_id/comments/:comment_id', sendCommentVotes);
