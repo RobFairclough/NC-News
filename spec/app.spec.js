@@ -241,22 +241,45 @@ describe('/api', () => {
       it('DELETE request should delete the article with given id, and respond status 204 and no-content', () => request
         .delete('/api/articles/1')
         .expect(204)
-        .then(() => request.get('/api/articles/1')
-          .expect(404)));
-      it('DELETE request should return status 404 if no article exists with given id', () => request
-        .delete('/api/articles/2113')
-        .expect(404));
-      it('DELETE request should return status 400 if given an invalid article id', () => request
-        .delete('/api/articles/ctrlalt')
-        .expect(400));
+        .then(() => request.get('/api/articles/1').expect(404)));
+      it('DELETE request should return status 404 if no article exists with given id', () => request.delete('/api/articles/2113').expect(404));
+      it('DELETE request should return status 400 if given an invalid article id', () => request.delete('/api/articles/ctrlalt').expect(400));
 
       describe.only('/comments', () => {
-        it('GET request should respond with status 200 and an array of comments, each having properties comment_id, votes, created_at, author and body', () => request.get('/api/articles/1/comments').expect(200).then(({ body }) => {
-          expect(body.comments[0]).to.have.all.keys('comment_id', 'votes', 'created_at', 'author', 'body');
-        }));
-        it('GET request should accept a ?sort_by and ?order query, defaulting to date and descending respectively', () => {});
-        it('GET request should accept a limit query, defaulting to 10', () => {});
-        it('GET request should accept a ?p query for pagination, with pages calculated based on the ?limit query', () => {});
+        it('GET request should respond with status 200 and an array of comments, each having properties comment_id, votes, created_at, author and body', () => request
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments[0]).to.have.all.keys(
+              'comment_id',
+              'votes',
+              'created_at',
+              'author',
+              'body',
+            );
+          }));
+        it('GET request should accept a ?limit, ?sort_by and ?sort_ascending query, defaulting to 10, date and false respectively', () => request
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).to.equal(10);
+            expect(body.comments[0].created_at).to.equal('2016-11-22');
+            expect(body.comments[9].created_at).to.equal('2007-11-25');
+          }));
+        it('GET request should accept a ?limit, ?sort_by and ?sort_ascending query, which can be set by the user', () => request
+          .get('/api/articles/1/comments?limit=5&sort_by=comment_id&sort_ascending=true')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).to.equal(5);
+            expect(body.comments[0].comment_id).to.be.lessThan(body.comments[1].comment_id);
+          }));
+        it('GET request should accept a ?p query for pagination, with pages calculated based on the ?limit query', () => request
+          .get('/api/articles/1/comments?limit=2&p=3')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).to.equal(2);
+            expect(body.comments[0].comment_id).to.equal(6);
+          }));
 
         it('POST request should accept an object with username and body propeties, and respond with the posted comment and status 201 if successful', () => {});
         it('POST request should respond status code 400 if not given required data', () => {});
