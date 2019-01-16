@@ -2,19 +2,15 @@ const connection = require('../db/connection');
 const { reformatDate } = require('../db/utils');
 
 const sendAllArticles = (req, res, next) => {
-  const {
-    sort_by = 'created_at', order, limit = 10, p = 1,
-  } = req.query;
+  const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
-  let sortBy = sort_by;
-  if (!validColumns.includes(sort_by)) sortBy = 'created_at';
+  const sortBy = validColumns.includes(req.query.sortBy) ? req.query.sortBy : 'created_at';
   const offset = limit * (p - 1);
   connection('articles')
     .select(
       'articles.username AS author',
       'articles.title',
       'articles.article_id',
-      'articles.body',
       'articles.votes',
       'articles.created_at',
       'topic',

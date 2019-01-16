@@ -9,10 +9,10 @@ const sendAllTopics = (req, res, next) => {
 
 const sendArticlesByTopic = (req, res, next) => {
   const { topic } = req.params;
-  const {
-    sort_by = 'created_at', order, limit = 10, p = 1,
-  } = req.query;
+  const { order, limit = 10, p = 1 } = req.query;
+  const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
   const offset = limit * (p - 1);
+  const sortBy = validColumns.includes(req.query.sortBy) ? req.query.sortBy : 'created_at';
   connection('articles')
     .select(
       'articles.username AS author',
@@ -27,7 +27,7 @@ const sendArticlesByTopic = (req, res, next) => {
     .groupBy('articles.article_id')
     .limit(limit)
     .offset(offset)
-    .orderBy(sort_by, order === 'asc' ? order : 'desc')
+    .orderBy(sortBy, order === 'asc' ? order : 'desc')
     .where(req.params)
     .then((articles) => {
       // postgres/knex returns dates as js Date objects, this puts back to the intended format
