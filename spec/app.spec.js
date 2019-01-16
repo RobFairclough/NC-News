@@ -327,7 +327,7 @@ describe('/api', () => {
                 );
               });
           }));
-        it('POST request should respond status code 400 if not given required data', () => request
+        it('POST request should respond status code 200 if not given required data', () => request
           .post('/api/articles/1/comments')
           .send({ username: 'rogersop', sad: true })
           .expect(400));
@@ -352,10 +352,10 @@ describe('/api', () => {
             .then(({ body }) => {
               expect(body.comment.votes).to.equal(20);
             }));
-          it('PATCH request should respond status code 400 if not given required data', () => request
+          it('PATCH request should respond status code 200 and a non-updated object if not given required data', () => request
             .patch('/api/articles/1/comments/2')
             .send({ this: 'is a good comment and I like it' })
-            .expect(400));
+            .expect(200));
           it('PATCH request should respond status code 404 if no comment exists with the given id', () => request
             .patch('/api/articles/1/comments/246810')
             .send({ inc_votes: 45 })

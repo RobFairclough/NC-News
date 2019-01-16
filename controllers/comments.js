@@ -15,8 +15,9 @@ const sendCommentsByArticleId = (req, res, next) => {
     .offset(offset)
     .orderBy(sort_by, sort_ascending === 'true' ? 'asc' : 'desc')
     .then((comments) => {
+      if (!comments.length) return Promise.reject({ status: 404, msg: '404 not found' });
       reformatDate(comments);
-      res.send({ article_id, comments });
+      return res.send({ article_id, comments });
     })
     .catch(next);
 };
@@ -30,26 +31,28 @@ const saveNewComment = (req, res, next) => {
     .returning('*')
     .then(([comment]) => {
       reformatDate(comment);
-      res.status(201).send({ comment });
+      return res.status(201).send({ comment });
     })
     .catch(next);
 };
 
 const sendCommentVotes = (req, res, next) => {
-  const { inc_votes } = req.body;
-  const { comment_id } = req.params;
-  if (!inc_votes) next({ status: 400, msg: 'no inc_votes property passed' });
-  else {
-    connection('comments')
-      .where('comment_id', comment_id)
-      .increment('votes', inc_votes)
-      .returning('*')
-      .then(([comment]) => {
-        reformatDate(comment);
-        res.send({ comment });
-      })
-      .catch(next);
-  }
+  const { comment_id, article_id } = req.params;
+  const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
+  if (isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
+  connection('comments')
+    .leftJoin('articles', 'articles.article_id', 'comments.article_id')
+    .where('comment_id', comment_id)
+    .andWhere('article_id', article_id)
+    .increment('votes', inc_votes)
+    .returning('*')
+    .then(([comment]) => {
+      if (!comment) return Promise.reject({ status: 404, msg: '404 not found' });
+
+      reformatDate(comment);
+      return res.send({ comment });
+    })
+    .catch(next);
 };
 
 const deleteComment = (req, res, next) => {
@@ -58,9 +61,10 @@ const deleteComment = (req, res, next) => {
     .where('comment_id', comment_id)
     .del()
     .then((response) => {
-      if (response === 0) next({ status: 404, msg: 'comment not found' });
-      else res.status(204).send({ msg: 'comment deleted' });
-    });
+      if (response === 0) return Promise.reject({ status: 404, msg: 'comment not found' });
+      return res.status(204).send({ msg: 'comment deleted' });
+    })
+    .catch(next);
 };
 
 module.exports = {
