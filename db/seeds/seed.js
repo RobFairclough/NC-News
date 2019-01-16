@@ -19,9 +19,7 @@ exports.seed = (knex, Promise) => knex('topics')
     const setArticleId = setArticleIds(setUsername, lookup);
     return knex('comments')
       .insert(setArticleId)
-      .then(() => {
-        knex('authorisations')
-          .insert(authData)
-          .returning('*');
-      });
+      .then(() => knex('authorisations')
+        .insert(authData)
+        .returning('*'));
   });

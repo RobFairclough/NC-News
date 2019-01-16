@@ -1,7 +1,9 @@
 const app = require('express')();
 const bodyParser = require('body-parser').json();
 const apiRouter = require('./routes/api');
-const { handle404, handle400, handle422 } = require('./errors');
+const {
+  handle404, handle400, handle422, handle401,
+} = require('./errors');
 const connection = require('./db/connection');
 
 app.use(bodyParser);
@@ -12,8 +14,9 @@ app.post('/login', (req, res, next) => {
   connection('authorisations')
     .where('username', username)
     .then(([user]) => {
-      if (!user || user.password !== password) next({ status: 401, msg: 'invalid login' });
+      if (!user || user.password !== password) handle401({ status: 401, msg: 'invalid login' }, req, res, next);
       else {
+        res.status(200).send({ msg: 'login success' });
         // correct details
       }
     });

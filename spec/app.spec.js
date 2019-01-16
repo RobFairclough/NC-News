@@ -17,9 +17,7 @@ describe('/api', () => {
   after(() => {
     connection.destroy();
   });
-  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request
-    .get('/api')
-    .expect(200));
+  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request.get('/api').expect(200));
 
   describe('/topics', () => {
     const topicsUrl = '/api/topics';
@@ -68,8 +66,9 @@ describe('/api', () => {
     });
     it('Invalid request methods should return status 405', () => {
       const invalidMethods = ['put', 'patch', 'delete'];
-      test405(invalidMethods, topicsUrl)
-        .then(([response]) => expect(response.statusCode).to.equal(405));
+      test405(invalidMethods, topicsUrl).then(([response]) => {
+        expect(response.statusCode).to.equal(405);
+      });
     });
 
     describe('/:topic/articles', () => {
@@ -169,8 +168,7 @@ describe('/api', () => {
         .expect(400));
       it('invalid request methods should return status 405', () => {
         const invalidMethods = ['put', 'patch', 'delete'];
-        test405(invalidMethods, '/api/topics/cats/articles')
-          .then(([response]) => expect(response.statusCode).to.equal(405));
+        test405(invalidMethods, '/api/topics/cats/articles').then(([response]) => expect(response.statusCode).to.equal(405));
       });
     });
   });
@@ -215,8 +213,7 @@ describe('/api', () => {
       }));
     it('Invalid request methods should return status 405', () => {
       const invalidMethods = ['post', 'put', 'patch', 'delete'];
-      test405(invalidMethods, '/api/articles')
-        .then(([response]) => expect(response.statusCode).to.equal(405));
+      test405(invalidMethods, '/api/articles').then(([response]) => expect(response.statusCode).to.equal(405));
     });
 
     describe('/:article_id', () => {
@@ -263,18 +260,19 @@ describe('/api', () => {
         .delete('/api/articles/1')
         .expect(204)
         .then(() => request.get('/api/articles/1').expect(404)));
-      it.only('DELETE request should cascade delete all comments about that article', () => request
+      it('DELETE request should cascade delete all comments about that article', () => request
         .delete('/api/articles/2')
         .expect(204)
-        .then(() => connection('comments').where('article_id', '2').then((comments) => {
-          expect(comments.length).to.equal(0);
-        })));
+        .then(() => connection('comments')
+          .where('article_id', '2')
+          .then((comments) => {
+            expect(comments.length).to.equal(0);
+          })));
       it('DELETE request should return status 404 if no article exists with given id', () => request.delete('/api/articles/2113').expect(404));
       it('DELETE request should return status 400 if given an invalid article id', () => request.delete('/api/articles/ctrlalt').expect(400));
       it('Invalid request methods should return status 405', () => {
         const invalidMethods = ['put', 'post'];
-        test405(invalidMethods, '/api/articles/1')
-          .then(([response]) => expect(response.statusCode).to.equal(405));
+        test405(invalidMethods, '/api/articles/1').then(([response]) => expect(response.statusCode).to.equal(405));
       });
 
       describe('/comments', () => {
@@ -342,8 +340,7 @@ describe('/api', () => {
           .expect(400));
         it('Invalid request methods should return status 405', () => {
           const invalidMethods = ['put', 'patch', 'delete'];
-          test405(invalidMethods, '/api/articles/1/comments')
-            .then(([response]) => expect(response.statusCode).to.equal(405));
+          test405(invalidMethods, '/api/articles/1/comments').then(([response]) => expect(response.statusCode).to.equal(405));
         });
         describe('/:comment_id', () => {
           it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => request
@@ -366,8 +363,7 @@ describe('/api', () => {
           it('DELETE request return status code 404 if comment_id does not exist', () => request.delete('/api/articles/1/comments/1234').expect(404));
           it('Invalid request methods should return status 405', () => {
             const invalidMethods = ['get', 'put', 'post'];
-            test405(invalidMethods, '/api/articles/1/comments/2')
-              .then(([response]) => expect(response.statusCode).to.equal(405));
+            test405(invalidMethods, '/api/articles/1/comments/2').then(([response]) => expect(response.statusCode).to.equal(405));
           });
         });
       });
@@ -400,9 +396,18 @@ describe('/api', () => {
       it('GET request should respond status 404 if no users exist by that usename', () => request.get('/api/users/robfairclough').expect(404));
       it('Invalid request methods should return status 405', () => {
         const invalidMethods = ['put', 'patch', 'delete'];
-        test405(invalidMethods, '/api/users/butter_bridge')
-          .then(([response]) => expect(response.statusCode).to.equal(405));
+        test405(invalidMethods, '/api/users/butter_bridge').then(([response]) => expect(response.statusCode).to.equal(405));
       });
     });
+  });
+  describe.only('/login', () => {
+    it('should not login with an incorrect password', () => request
+      .post('/login')
+      .send({ username: 'rob', password: 'WRONG' })
+      .expect(401));
+    it('should accept a correct password', () => request
+      .post('/login')
+      .send({ username: 'rob', password: 'password' })
+      .expect(200));
   });
 });

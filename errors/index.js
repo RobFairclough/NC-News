@@ -4,6 +4,10 @@ exports.handle400 = (err, req, res, next) => {
     res.status(400).send({ msg: err.toString() });
   } else next(err);
 };
+exports.handle401 = (err, req, res, next) => {
+  if (err.status === 401) res.status(401).send(err);
+  else next(err);
+};
 exports.handle422 = (err, req, res, next) => {
   const codes422 = ['23505'];
   if (codes422.includes(err.code) || err.status === 422) res.status(422).send({ msg: err.detail });
