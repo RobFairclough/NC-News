@@ -1,0 +1,52 @@
+{
+  "topics": {
+    "GET": {
+      "get all topics": "/api/topics",
+      "get articles by topic": {
+        "url": "/api/topics/:topic/articles",
+        "queries": {
+          "?limit": "int: limits number of responses (default 10)",
+          "?sort_by": "sorts the articles by any valid column from article_id, title, body, votes, topic, username, created_at (defaults to created_at)",
+          "?p": "page of results (default 1)",
+          "?order": "order which the responses should be sorted, asc or desc (default to desc)"
+        }
+      }
+    },
+    "POST": {
+      "create a new topic": {
+        "url": "/api/topics",
+        "body": { "slug": "string", "description": "string" }
+      },
+      "create a new article": {
+        "url": "/api/topics/:topic/articles",
+        "body": {
+          "title": "string",
+          "body": "string",
+          "username": "string(must be an existing username"
+        }
+      }
+    }
+  },
+  "articles": {
+    "GET": {
+      "get all articles": {
+        "url": "/api/articles",
+        "queries": {
+          "?limit": "int: limits number of responses (default 10)",
+          "?sort_by": "sorts the articles by any valid column from article_id, title, body, votes, topic, username, created_at (defaults to created_at)",
+          "?p": "page of results (default 1)",
+          "?order": "order which the responses should be sorted, asc or desc (default to desc)"
+        },
+        "get article by article id": "/api/articles/:article_id"
+      }
+    },
+    "PATCH": {
+      "vote on an article": {
+        "url": "/api/articles/:article_id",
+        "body": {
+          "inc_votes": "int - number of votes to send (pos or negative)"
+        }
+      }
+    }
+  }
+}
