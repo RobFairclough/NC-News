@@ -4,7 +4,7 @@ const { reformatDate } = require('../db/utils');
 const sendAllArticles = (req, res, next) => {
   const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
-  const sortBy = validColumns.includes(req.query.sortBy) ? req.query.sortBy : 'created_at';
+  const sortBy = validColumns.includes(req.query.sort_by) ? req.query.sort_by : 'created_at';
   const offset = limit * (p - 1);
   connection('articles')
     .select(
@@ -55,21 +55,19 @@ const sendArticleById = (req, res, next) => {
 
 const sendArticleVotes = (req, res, next) => {
   const { article_id } = req.params;
-  const { inc_votes } = req.body;
-  if (!inc_votes) next({ status: 400, msg: 'PATCH usage: send object {inc_votes: 100}' });
-  else {
-    connection('articles')
-      .where('article_id', '=', article_id)
-      .increment('votes', inc_votes)
-      .returning('*')
-      .then(([article]) => {
-        if (article) {
-          reformatDate(article);
-          res.send({ article });
-        } else next({ status: 404, msg: `article not found with id ${article_id}` });
-      })
-      .catch(next);
-  }
+  const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
+  if (isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
+  connection('articles')
+    .where('article_id', '=', article_id)
+    .increment('votes', inc_votes)
+    .returning('*')
+    .then(([article]) => {
+      if (article) {
+        reformatDate(article);
+        res.send({ article });
+      } else return next({ status: 404, msg: `article not found with id ${article_id}` });
+    })
+    .catch(next);
 };
 
 const deleteArticle = (req, res, next) => {
