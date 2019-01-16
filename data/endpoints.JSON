@@ -1,11 +1,15 @@
 {
   "topics": {
     "GET": {
-      "get all topics": "/api/topics",
+      "get all topics": {
+        "url": "/api/topics",
+        "description": "Sends all topics' slug and description"
+      },
       "get articles by topic": {
         "url": "/api/topics/:topic/articles",
+        "description": "Sends all articles about the input topic",
         "queries": {
-          "?limit": "int: limits number of responses (default 10)",
+          "?limit": "limits number of responses (default 10)",
           "?sort_by": "sorts the articles by any valid column from article_id, title, body, votes, topic, username, created_at (defaults to created_at)",
           "?p": "page of results (default 1)",
           "?order": "order which the responses should be sorted, asc or desc (default to desc)"
@@ -15,15 +19,19 @@
     "POST": {
       "create a new topic": {
         "url": "/api/topics",
-        "body": { "slug": "string", "description": "string" }
+        "description": "adds a new topic to the database (prerequisite for creating an article about the topic)",
+        "body": { "slug": "string", "description": "string" },
+        "response": "returns the created topic object"
       },
       "create a new article": {
         "url": "/api/topics/:topic/articles",
+        "description": "adds a new article about the input topic (topic must already exist)",
         "body": {
           "title": "string",
           "body": "string",
-          "username": "string(must be an existing username"
-        }
+          "username": "string(must be an existing username)"
+        },
+        "response": "returns the created article object"
       }
     }
   },
@@ -31,20 +39,59 @@
     "GET": {
       "get all articles": {
         "url": "/api/articles",
+        "description": "sends a list of articles, formatted by user queries",
         "queries": {
           "?limit": "int: limits number of responses (default 10)",
           "?sort_by": "sorts the articles by any valid column from article_id, title, body, votes, topic, username, created_at (defaults to created_at)",
           "?p": "page of results (default 1)",
           "?order": "order which the responses should be sorted, asc or desc (default to desc)"
         },
-        "get article by article id": "/api/articles/:article_id"
+        "response": "status code 200, array of article objects"
+      },
+      "get article by article id": {
+        "url": "/api/articles/:article_id",
+        "description": "pulls an existing article from the database matching the input ID",
+        "response": "status code 200, article object"
       }
     },
     "PATCH": {
       "vote on an article": {
         "url": "/api/articles/:article_id",
+        "description": "increments or decrements the vote count on an article based on the required inc_votes key given in the body",
         "body": {
           "inc_votes": "int - number of votes to send (pos or negative)"
+        },
+        "response": "status code 200, returns the article with an updated vote count"
+      }
+    },
+    "DELETE": {
+      "delete an article": {
+        "url": "/api/articles/:article_id",
+        "description": "remove an article from the database by it's ID",
+        "response": "status code 204 with a message to say the deletion was successful"
+      }
+    }
+  },
+  "comments": {
+    "GET": {
+      "get an article's comments": {
+        "url": "/api/articles/:article_id/comments",
+        "description": "sends a list of comments for a given article, formatted by user queries",
+        "queries": {
+          "?limit": "int: limits number of responses (default 10)",
+          "?sort_by": "sorts the comments by any valid column from comment_id, body, votes, author, created_at (defaults to created_at)",
+          "?p": "page of results (default 1)",
+          "?sort_ascending": "boolean for whether the results should be sorted in ascending order - defaults to false(descending)"
+        }
+      }
+    },
+    "POST": {
+      "create a new comment": {
+        "url": "/api/articles/:article_id/comments",
+        "description": "adds a new comment to the given article, getting information from the request body",
+        "body": {
+          "username": "string, must be an existing username",
+          "body": "string"
         }
       }
     }
