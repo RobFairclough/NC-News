@@ -405,9 +405,12 @@ describe('/api', () => {
       .post('/login')
       .send({ username: 'rob', password: 'WRONG' })
       .expect(401));
-    it('should accept a correct password', () => request
+    it('should accept a correct password and respond with a token', () => request
       .post('/login')
       .send({ username: 'rob', password: 'password' })
-      .expect(200));
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).to.have.property('token');
+      }));
   });
 });
