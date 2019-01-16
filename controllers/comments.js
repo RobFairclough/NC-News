@@ -1,5 +1,5 @@
 const connection = require('../db/connection');
-const reformatDate = require('../db/utils');
+const { reformatDate } = require('../db/utils');
 
 const sendCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
