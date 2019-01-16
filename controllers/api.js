@@ -1,5 +1,3 @@
-const connection = require('../db/connection');
-
 const serveJSON = (req, res, next) => {
   res.sendFile('../data/endpoints.JSON');
 };
