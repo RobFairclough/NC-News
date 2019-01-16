@@ -1,24 +1,17 @@
 const articlesRouter = require('express').Router();
+const commentsRouter = require('./comments');
 const {
   sendAllArticles,
   sendArticleById,
   sendArticleVotes,
   deleteArticle,
-  sendCommentsByArticleId,
-  saveNewComment,
-  sendCommentVotes,
-  deleteComment,
 } = require('../controllers/articles');
+
+articlesRouter.use('/:article_id/comments', commentsRouter);
 
 articlesRouter.get('/', sendAllArticles);
 articlesRouter.get('/:article_id', sendArticleById);
 articlesRouter.patch('/:article_id', sendArticleVotes);
 articlesRouter.delete('/:article_id', deleteArticle);
-
-// route these into a comments router?
-articlesRouter.get('/:article_id/comments', sendCommentsByArticleId);
-articlesRouter.post('/:article_id/comments', saveNewComment);
-articlesRouter.patch('/:article_id/comments/:comment_id', sendCommentVotes);
-articlesRouter.delete('/:article_id/comments/:comment_id', deleteComment);
 
 module.exports = articlesRouter;
