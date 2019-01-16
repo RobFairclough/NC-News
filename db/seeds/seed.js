@@ -1,5 +1,5 @@
 const {
-  topicData, articleData, userData, commentData,
+  topicData, articleData, userData, commentData, authData,
 } = require('../data');
 
 const {
@@ -17,5 +17,11 @@ exports.seed = (knex, Promise) => knex('topics')
     const setUsername = renameColumn(dateChanged, 'created_by', 'username');
     const lookup = getArticleIds(articles);
     const setArticleId = setArticleIds(setUsername, lookup);
-    return knex('comments').insert(setArticleId);
+    return knex('comments')
+      .insert(setArticleId)
+      .then(() => {
+        knex('authorisations')
+          .insert(authData)
+          .returning('*');
+      });
   });
