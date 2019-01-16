@@ -1,5 +1,5 @@
 const serveJSON = (req, res, next) => {
-  res.sendFile('../data/endpoints.JSON');
+  res.sendFile(`${process.cwd()}/data/endpoints.JSON`);
 };
 
 module.exports = { serveJSON };

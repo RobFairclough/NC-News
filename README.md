@@ -1,252 +1,87 @@
-# BE2-NC-Knews
+# NC Knews
 
-## Northcoders News API
+NC Knews is an API built to serve the front-end Northcoders News Sprint.
 
-### Background
+## Getting Started
 
-We will be building the API to use in the Northcoders News Sprint during the Front End block of the course.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-Our database will be PSQL, and you will interact with it using [Knex](https://knexjs.org).
+### Prerequisites
 
-### NOTE:
+What things you need to install the software and how to install them
 
-For this sprint ensure you have the eslint extension installed in VS-Code as it will help to enforce best practices when you are writing your code.
-
-### Step 1 - Seeding
-
-Data has been provided for both testing and development environments so you will need to write a seed function to seed your database. You should think about how you will write your seed file to use either test data or dev data depending on the environment that you're running in.
-
-
-1. You should have separate tables for topics, articles, users and comments, and you will need to think carefully about the order in which you seed your data.
-
-- Each topic should have:
-
-  - `slug` field which is a unique string that acts as the table's primary key
-  - `description` field which is a string giving a brief description of a given topic
-
-- Each user should have:
-
-  - `username` which is the primary key & unique
-  - `avatar_url`
-  - `name`
-
-- Each article should have:
-  - `article_id` which is the primary key
-  - `title`
-  - `body`
-  - `votes` defaults to 0
-  - `topic` field which references the slug in the topics table
-  - `username` field that references a user's primary key.
-  - `created_at` defaults to the current date
-
-* Each comment should have:
-  - `comment_id` which is the primary key
-  - `username` field that references a user's primary key
-  - `article_id` field that references an article's primary key
-  - `votes` defaults to 0
-  - `created_at` defaults to the current date
-  - `body`
-
-- NOTE: psql expects Date types to be in a date format - not a timestamp! However, you can easily turn a timestamp into a date using js...
-
-
-### Step 2 - Building and Testing
-
-1.  Build your Express app
-2.  Mount an API Router onto your app
-3.  Define the routes described below
-4.  Define controller functions for each of your routes.
-5.  Use proper project configuration from the offset, being sure to treat development and test differently.
-6.  Test each route **as you go**, checking both successful requests and the variety of errors you could expect to encounter.
-
-**HINT** You will need to take advantage of knex migrations in order to efficiently test your application.
-
-### Routes
-
-Your server should have the following end-points:
-
-```http
-GET /api/topics
+```
+Give examples
 ```
 
-- responds with an array of topic objects - each object should have a `slug` and `description` property.
+### Installing
 
-```http
-POST /api/topics
+A step by step series of examples that tell you how to get a development env running
+
+Say what the step will be
+
+```
+Give the example
 ```
 
-- accepts an object containing `slug` and `description` property, the `slug` must be unique
-- responds with the posted topic object
+And repeat
 
-```http
-GET /api/topics/:topic/articles
+```
+until finished
 ```
 
-- responds with an array of article objects for a given topic
-- each article should have:
-  - `author` which is the `username` from the users table,
-  - `title`
-  - `article_id`
-  - `votes`
-  - `comment_count` which is the accumulated count of all the comments with this article_id. You should make use of knex queries in order to achieve this.
-  - `created_at`
-  - `topic`
+End with an example of getting some data out of the system or using it for a little demo
 
-Queries
+## Running the tests
 
-- This route should accept the following queries:
-  - `limit`, which limits the number of responses (defaults to 10)
-  - `sort_by`, which sorts the articles by any valid column (defaults to date)
-  - `p`, stands for page which specifies the page at which to start (calculated using limit)
-  - `order`, which can be set to `asc` or `desc` for ascending or descending  (defaults to descending)
+Explain how to run the automated tests for this system
 
+### Break down into end to end tests
 
-## IMPORTANT:
-* Both `comments` and `articles` data in the test-data are given ordered in descending order of time : this will be useful to you when it comes to writing your tests!
+Explain what these tests test and why
 
-
-```http
-POST /api/topics/:topic/articles
+```
+Give an example
 ```
 
-- accepts an object containing a `title` , `body` and a `username` property
-- responds with the posted article
+### And coding style tests
 
-```http
-GET /api/articles
+Explain what these tests test and why
+
+```
+Give an example
 ```
 
-- responds with an array of article objects
-- each article should have:
-  - `author` which is the `username` from the users table,
-  - `title`
-  - `article_id`
-  - `body`
-  - `votes`
-  - `comment_count` which is the accumulated count of all the comments with this article_id. You should make use of knex queries in order to achieve this.
-  - `created_at`
-  - `topic`
+## Deployment
 
-Queries
+Add additional notes about how to deploy this on a live system
 
-- This route should accept the following queries:
-  - `limit`, which limits the number of responses (defaults to 10)
-  - `sort_by`, which sorts the articles by any valid column (defaults to date)
-  - `p`, stands for page which specifies the page at which to start (calculated using limit)
-  - `order`, which can be set to `asc` or `desc` for ascending or descending  (defaults to descending)
+## Built With
 
+- [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+- [Maven](https://maven.apache.org/) - Dependency Management
+- [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
-```http
-GET /api/articles/:article_id
-```
+## Contributing
 
-- responds with an article object
-- each article should have:
-  - `article_id`
-  - `author` which is the `username` from the users table,
-  - `title`
-  - `votes`
-  - `body`
-  - `comment_count` which is the count of all the comments with this article_id. A particular SQL clause is useful for this job!
-  - `created_at`
-  - `topic`
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-```http
-PATCH /api/articles/:article_id
-```
+## Versioning
 
-- accepts an object in the form `{ inc_votes: newVote }`
-  - `newVote` will indicate how much the `votes` property in the database should be updated by
-    E.g `{ inc_votes : 1 }` would increment the current article's vote property by 1
-    `{ inc_votes : -100 }` would decrement the current article's vote property by 100
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
 
-- this end-point should respond with the article you have just updated    
+## Authors
 
-```http
-DELETE /api/articles/:article_id
-```
+- **Billie Thompson** - _Initial work_ - [PurpleBooth](https://github.com/PurpleBooth)
 
-- should delete the given article by `article_id`
-- should respond with 204 and no-content
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
-```http
-GET /api/articles/:article_id/comments
-```
+## License
 
-- responds with an array of comments for the given `article_id`
-- each comment should have
-  - `comment_id`
-  - `votes`
-  - `created_at`
-  - `author` which is the `username` from the users table
-  - `body`
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-Queries
+## Acknowledgments
 
-- This route should accept the following queries:
-
-* limit, which limits the number of responses (defaults to 10)
-* sort_by, which sorts the articles by any valid column (defaults to date)
-* p, stands for page which specifies the page at which to start (calculated using limit)
-* sort_ascending, when "true" returns the results sorted in ascending order (defaults to descending)
-
-```http
-POST /api/articles/:article_id/comments
-```
-
-- accepts an object with a `username` and `body`
-- responds with the posted comment
-
-```http
-PATCH /api/articles/:article_id/comments/:comment_id
-```
-
-- accepts an object in the form `{ inc_votes: newVote }`
-  - `newVote` will indicate how much the `votes` property in the database should be updated by
-    E.g `{ inc_votes : 1 }` would increment the current article's vote property by 1
-    `{ inc_votes : -1 }` would decrement the current article's vote property by 1
-
-- this end-point should respond with the comment you have just updated
-
-```http
-DELETE /api/articles/:article_id/comments/:comment_id
-```
-
-- should delete the given comment by `comment_id`
-- should respond with 204 and no-content
-
-```http
-GET /api/users
-```
-
-- should respond with an array of user objects
-- each user object should have
-  - `username`
-  - `avatar_url`
-  - `name`
-
-```http
-GET /api/users/:username
-```
-
-- should respond with a user object
-- each user should have
-  - `username`
-  - `avatar_url`
-  - `name`
-
-```http
-GET /api
-```
-
-- Serves JSON describing all the available endpoints on your API
-
-### Step 3 - Hosting
-
-Make sure your application and your database is hosted using heroku
-
-### Step 4 - Preparing for your review and portfolio
-
-Finally, you should write a README for this project (and remove this one). The README should be broken down like this: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
-
-It should also include the link where your herokuapp is hosted.
+- Hat tip to anyone whose code was used
+- Inspiration
+- etc

@@ -10,7 +10,10 @@ exports.up = function (knex, Promise) {
     table.text('topic').notNullable();
     table.foreign('topic').references('topics.slug');
     table.text('username').notNullable();
-    table.foreign('username').references('users.username');
+    table
+      .foreign('username')
+      .references('users.username')
+      .onDelete('CASCADE');
     table
       .date('created_at')
       .notNullable()

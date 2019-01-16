@@ -7,7 +7,10 @@ exports.up = function (knex, Promise) {
     table.string('username').notNullable();
     table.foreign('username').references('users.username');
     table.integer('article_id').notNullable();
-    table.foreign('article_id').references('articles.article_id');
+    table
+      .foreign('article_id')
+      .references('articles.article_id')
+      .onDelete('CASCADE');
     table.integer('votes').defaultTo(0);
     table
       .date('created_at')

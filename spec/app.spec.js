@@ -17,7 +17,9 @@ describe('/api', () => {
   after(() => {
     connection.destroy();
   });
-  it('GET request should respond with a JSON object describing all available endpoints on the API', () => {});
+  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request
+    .get('/api')
+    .expect(200));
 
   describe('/topics', () => {
     const topicsUrl = '/api/topics';
@@ -261,6 +263,12 @@ describe('/api', () => {
         .delete('/api/articles/1')
         .expect(204)
         .then(() => request.get('/api/articles/1').expect(404)));
+      it.only('DELETE request should cascade delete all comments about that article', () => request
+        .delete('/api/articles/2')
+        .expect(204)
+        .then(() => connection('comments').where('article_id', '2').then((comments) => {
+          expect(comments.length).to.equal(0);
+        })));
       it('DELETE request should return status 404 if no article exists with given id', () => request.delete('/api/articles/2113').expect(404));
       it('DELETE request should return status 400 if given an invalid article id', () => request.delete('/api/articles/ctrlalt').expect(400));
       it('Invalid request methods should return status 405', () => {
@@ -366,7 +374,7 @@ describe('/api', () => {
     });
   });
 
-  describe.only('/users', () => {
+  describe('/users', () => {
     it('GET request should respond status 200 and give an array of user objects with properties username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
