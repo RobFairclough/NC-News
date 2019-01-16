@@ -4,7 +4,8 @@ const { reformatDate } = require('../db/utils');
 const sendAllTopics = (req, res, next) => {
   connection('topics')
     .select()
-    .then(topics => res.send({ topics }));
+    .then(topics => res.send({ topics }))
+    .catch(next);
 };
 
 const sendArticlesByTopic = (req, res, next) => {

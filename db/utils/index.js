@@ -12,13 +12,11 @@ module.exports = {
   },
 
   renameColumn(array, before, after) {
-    const newArr = [];
-    array.forEach(obj => newArr.push(JSON.parse(JSON.stringify(obj))));
-    newArr.forEach((obj) => {
-      obj[after] = obj[before];
-      delete obj[before];
+    const mapFunc = (beforeCol, afterCol, { [beforeCol]: old, ...others }) => ({
+      [afterCol]: old,
+      ...others,
     });
-    return newArr;
+    return array.map(obj => mapFunc(before, after, obj));
   },
 
   getArticleIds(articles) {
@@ -30,13 +28,13 @@ module.exports = {
   },
 
   setArticleIds(articles, object) {
-    const newArr = [];
-    articles.forEach(article => newArr.push(JSON.parse(JSON.stringify(article))));
-    return newArr.map((article) => {
-      article.article_id = object[article.belongs_to];
-      delete article.belongs_to;
-      return article;
-    });
+    return articles.map(article => Object.keys(article).reduce(
+      (obj, key) => {
+        if (key !== 'belongs_to') obj[key] = article[key];
+        return obj;
+      },
+      { article_id: object[article.belongs_to] },
+    ));
   },
   reformatDate(arr) {
     if (Array.isArray(arr)) {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon listen.js",
-    "test": "mocha spec",
+    "test": "psql -f db/test_setup.sql && mocha spec",
     "lint": "eslint ./ --fix",
     "pre-commit": "npm t",
     "posttest": "npm run lint",
