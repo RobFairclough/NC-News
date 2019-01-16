@@ -5,10 +5,18 @@ const {
   sendArticlesByTopic,
   saveNewArticleInTopic,
 } = require('../controllers/topics');
+const { handle405 } = require('../errors');
 
-topicsRouter.get('/', sendAllTopics);
-topicsRouter.get('/:topic/articles', sendArticlesByTopic);
+topicsRouter
+  .route('/')
+  .get(sendAllTopics)
+  .post(saveNewTopic)
+  .all(handle405);
 
-topicsRouter.post('/', saveNewTopic);
-topicsRouter.post('/:topic/articles', saveNewArticleInTopic);
+topicsRouter
+  .route('/:topic/articles')
+  .get(sendArticlesByTopic)
+  .post(saveNewArticleInTopic)
+  .all(handle405);
+
 module.exports = topicsRouter;
