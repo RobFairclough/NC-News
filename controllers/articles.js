@@ -5,6 +5,9 @@ const sendAllArticles = (req, res, next) => {
   const {
     sort_by = 'created_at', order, limit = 10, p = 1,
   } = req.query;
+  const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
+  let sortBy = sort_by;
+  if (!validColumns.includes(sort_by)) sortBy = 'created_at';
   const offset = limit * (p - 1);
   connection('articles')
     .select(
@@ -17,7 +20,7 @@ const sendAllArticles = (req, res, next) => {
       'topic',
     )
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-    .orderBy(sort_by, order === 'asc' ? order : 'desc')
+    .orderBy(sortBy, order === 'asc' ? order : 'desc')
     .offset(offset)
     .limit(limit)
     .count('comments.comment_id AS comment_count')

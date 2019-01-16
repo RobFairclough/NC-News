@@ -5,7 +5,10 @@ const app = require('../app');
 const connection = require('../db/connection');
 
 const request = supertest(app);
-
+const test405 = (invalidMethods, path) => {
+  const invalidRequests = invalidMethods.map(method => request[method](path).expect(405));
+  return Promise.all(invalidRequests);
+};
 describe('/api', () => {
   beforeEach(() => connection.migrate
     .rollback()
@@ -17,8 +20,9 @@ describe('/api', () => {
   it('GET request should respond with a JSON object describing all available endpoints on the API', () => {});
 
   describe('/topics', () => {
+    const topicsUrl = '/api/topics';
     it('GET request at /topics should return status 200 and an array of topic objects, each having a slug and description property', () => request
-      .get('/api/topics')
+      .get(topicsUrl)
       .expect(200)
       .then(({ body }) => {
         const obj = body.topics[0];
@@ -29,7 +33,7 @@ describe('/api', () => {
     it('POST request at /topics should accept an object with slug and description properties and respond with status 201, returning the posted topic object', () => {
       const testObj = { slug: 'test', description: 'this is a test' };
       return request
-        .post('/api/topics')
+        .post(topicsUrl)
         .send(testObj)
         .expect(201)
         .then(({ body }) => {
@@ -39,7 +43,7 @@ describe('/api', () => {
     it('POST request at /topics should only accept the slug if unique and when failing should respond status 422', () => {
       const testObj = { slug: 'mitch', description: 'duplicate slug' };
       return request
-        .post('/api/topics')
+        .post(topicsUrl)
         .send(testObj)
         .expect(422)
         .then(({ body }) => {
@@ -49,16 +53,21 @@ describe('/api', () => {
     it('POST request at /topics should not accept the request if missing a description', () => {
       const testObj = { slug: 'test' };
       return request
-        .post('/api/topics')
+        .post(topicsUrl)
         .send(testObj)
         .expect(400);
     });
     it('POST request at /topics should not accept the request if missing a slug', () => {
       const testObj = { description: 'test' };
       return request
-        .post('/api/topics')
+        .post(topicsUrl)
         .send(testObj)
         .expect(400);
+    });
+    it('Invalid request methods should return status 405', () => {
+      const invalidMethods = ['put', 'patch', 'delete'];
+      test405(invalidMethods, topicsUrl)
+        .then(([response]) => expect(response.statusCode).to.equal(405));
     });
 
     describe('/:topic/articles', () => {
@@ -156,6 +165,11 @@ describe('/api', () => {
           body: 'cook the birb pls',
         })
         .expect(400));
+      it('invalid request methods should return status 405', () => {
+        const invalidMethods = ['put', 'patch', 'delete'];
+        test405(invalidMethods, '/api/topics/cats/articles')
+          .then(([response]) => expect(response.statusCode).to.equal(405));
+      });
     });
   });
 
@@ -197,6 +211,11 @@ describe('/api', () => {
         expect(body.articles[0].article_id).to.equal(3);
         expect(body.articles[1].article_id).to.equal(4);
       }));
+    it('Invalid request methods should return status 405', () => {
+      const invalidMethods = ['post', 'put', 'patch', 'delete'];
+      test405(invalidMethods, '/api/articles')
+        .then(([response]) => expect(response.statusCode).to.equal(405));
+    });
 
     describe('/:article_id', () => {
       it('GET request should return status 200 and an article object with properties article_id, author, title, votes, body, comment_count, created_at and topic', () => request
@@ -244,6 +263,11 @@ describe('/api', () => {
         .then(() => request.get('/api/articles/1').expect(404)));
       it('DELETE request should return status 404 if no article exists with given id', () => request.delete('/api/articles/2113').expect(404));
       it('DELETE request should return status 400 if given an invalid article id', () => request.delete('/api/articles/ctrlalt').expect(400));
+      it('Invalid request methods should return status 405', () => {
+        const invalidMethods = ['put', 'post'];
+        test405(invalidMethods, '/api/articles/1')
+          .then(([response]) => expect(response.statusCode).to.equal(405));
+      });
 
       describe('/comments', () => {
         it('GET request should respond with status 200 and an array of comments, each having properties comment_id, votes, created_at, author and body', () => request
@@ -308,6 +332,11 @@ describe('/api', () => {
           .post('/api/articles/6969/comments')
           .send({ username: 'icellusedkars', body: 'real comment' })
           .expect(400));
+        it('Invalid request methods should return status 405', () => {
+          const invalidMethods = ['put', 'patch', 'delete'];
+          test405(invalidMethods, '/api/articles/1/comments')
+            .then(([response]) => expect(response.statusCode).to.equal(405));
+        });
         describe('/:comment_id', () => {
           it('PATCH request should accept an object in the form {inc_votes: newVote}, responding with a status code of 200 and an object of the updated article ', () => request
             .patch('/api/articles/1/comments/2')
@@ -327,12 +356,17 @@ describe('/api', () => {
 
           it('DELETE request should delete given comment by comment_id, and respond with status 204', () => request.delete('/api/articles/1/comments/2').expect(204));
           it('DELETE request return status code 404 if comment_id does not exist', () => request.delete('/api/articles/1/comments/1234').expect(404));
+          it('Invalid request methods should return status 405', () => {
+            const invalidMethods = ['get', 'put', 'post'];
+            test405(invalidMethods, '/api/articles/1/comments/2')
+              .then(([response]) => expect(response.statusCode).to.equal(405));
+          });
         });
       });
     });
   });
 
-  describe('/users', () => {
+  describe.only('/users', () => {
     it('GET request should respond status 200 and give an array of user objects with properties username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
@@ -340,6 +374,10 @@ describe('/api', () => {
         expect(body.users[0]).to.have.all.keys('username', 'avatar_url', 'name');
         expect(body.users.length).to.equal(3);
       }));
+    it('Invalid request methods should return status 405', () => {
+      const invalidMethods = ['put', 'patch', 'delete', 'post'];
+      test405(invalidMethods, '/api/users');
+    });
     describe('/users/:username', () => {
       it('GET request should respond status 200 and give a user object with properties username, avatar_url, name', () => request
         .get('/api/users/butter_bridge')
@@ -351,9 +389,12 @@ describe('/api', () => {
             'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg',
           );
         }));
-      it('GET request should respond status 404 if no users exist by that usename', () => request
-        .get('/api/users/robfairclough')
-        .expect(404));
+      it('GET request should respond status 404 if no users exist by that usename', () => request.get('/api/users/robfairclough').expect(404));
+      it('Invalid request methods should return status 405', () => {
+        const invalidMethods = ['put', 'patch', 'delete'];
+        test405(invalidMethods, '/api/users/butter_bridge')
+          .then(([response]) => expect(response.statusCode).to.equal(405));
+      });
     });
   });
 });
