@@ -401,9 +401,13 @@ describe('/api', () => {
     });
   });
   describe.only('/login', () => {
-    it('should not login with an incorrect password', () => request
+    it('should respond status 401 and not login with an incorrect password', () => request
       .post('/login')
       .send({ username: 'rob', password: 'WRONG' })
+      .expect(401));
+    it('should respond status 401 and not login with an incorrect password', () => request
+      .post('/login')
+      .send({ username: 'hello', password: 'password' })
       .expect(401));
     it('should accept a correct password and respond with a token', () => request
       .post('/login')
