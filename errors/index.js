@@ -13,3 +13,11 @@ exports.handle422 = (err, req, res, next) => {
 exports.handle404 = (err, req, res, next) => {
   res.status(404).send({ msg: err.message });
 };
+
+exports.handle500 = (err, req, res, next) => {
+  res.status(500).send({ msg: err });
+};
+
+exports.handle405 = (req, res, next) => {
+  res.status(405).send({ message: 'invalid method for this endpoint' });
+};
