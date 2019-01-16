@@ -13,7 +13,8 @@
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
     "seed:run": "knex seed:run",
-    "seed": "npm run migrate:rollback && npm run migrate:latest && npm run seed:run"
+    "seed": "npm run migrate:rollback && npm run migrate:latest && npm run seed:run",
+    "start": "node listen.js"
   },
   "repository": {
     "type": "git",
