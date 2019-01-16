@@ -56,16 +56,17 @@ const sendArticleById = (req, res, next) => {
 const sendArticleVotes = (req, res, next) => {
   const { article_id } = req.params;
   const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
-  if (isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
-  connection('articles')
+  if (Number.isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
+  return connection('articles')
     .where('article_id', '=', article_id)
     .increment('votes', inc_votes)
     .returning('*')
     .then(([article]) => {
       if (article) {
         reformatDate(article);
-        res.send({ article });
-      } else return next({ status: 404, msg: `article not found with id ${article_id}` });
+        return res.send({ article });
+      }
+      return next({ status: 404, msg: `article not found with id ${article_id}` });
     })
     .catch(next);
 };

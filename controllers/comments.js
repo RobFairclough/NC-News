@@ -39,8 +39,8 @@ const saveNewComment = (req, res, next) => {
 const sendCommentVotes = (req, res, next) => {
   const { comment_id, article_id } = req.params;
   const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
-  if (isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
-  connection('comments')
+  if (Number.isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
+  return connection('comments')
     .leftJoin('articles', 'articles.article_id', 'comments.article_id')
     .where('comment_id', comment_id)
     .andWhere('article_id', article_id)
