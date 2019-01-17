@@ -1,13 +1,13 @@
 const {
   topicData, articleData, userData, commentData,
-} = require('../data');
+} = require('../db/data');
 const {
   renameColumn,
   changeTimestampToDate,
   getArticleIds,
   setArticleIds,
   formatUsers,
-} = require('../utils');
+} = require('../db/utils');
 
 exports.seed = (knex, Promise) => knex('topics')
   .insert(topicData)

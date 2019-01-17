@@ -10,10 +10,10 @@ module.exports = connection;
 //     client: 'pg',
 //     connection: process.env.DATABASE_URL,
 //     migrations: {
-//       tableName: './db/seeds/migrations',
+//       tableName: './seeds/migrations',
 
 //       seeds: {
-//         directory: './db/seeds',
+//         directory: './seeds',
 //       },
 //     },
 //   }
