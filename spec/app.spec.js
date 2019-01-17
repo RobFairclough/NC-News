@@ -397,7 +397,7 @@ describe('/api', () => {
     });
   });
 
-  describe.only('/users', () => {
+  describe('/users', () => {
     it('GET request should respond status 200 and give an array of user objects with properties username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
