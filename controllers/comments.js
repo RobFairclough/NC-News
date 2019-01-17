@@ -55,9 +55,10 @@ const sendCommentVotes = (req, res, next) => {
 };
 
 const deleteComment = (req, res, next) => {
-  const { comment_id } = req.params;
+  const { comment_id, article_id } = req.params;
   connection('comments')
     .where('comment_id', comment_id)
+    .andWhere('article_id', article_id)
     .del()
     .then((response) => {
       if (response === 0) return Promise.reject({ status: 404, msg: 'comment not found' });
