@@ -13,7 +13,7 @@ const { authorise } = require('./controllers/secure');
 
 app.use(bodyParser);
 app.use('/api', apiRouter);
-
+app.get('/', (req, res) => res.send('homepage'));
 // auth bonus
 app.post('/login', (req, res, next) => {
   const { username, password } = req.body;
