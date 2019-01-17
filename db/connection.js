@@ -12,21 +12,7 @@ const dbConfig = ENV === 'production'
       },
     },
   }
-  :require('../knexfile')[ENV];
+  : require('../knexfile')[ENV];
 
 const connection = knex(dbConfig);
 module.exports = connection;
-
-ENV === 'production'
-  ? {
-    client: 'pg',
-    connection: process.env.DATABASE_URL,
-    migrations: {
-      tableName: './seeds/migrations',
-
-      seeds: {
-        directory: './seeds',
-      },
-    },
-  }
-  :
