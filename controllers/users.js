@@ -2,7 +2,7 @@ const connection = require('../db/connection');
 
 const sendAllUsers = (req, res, next) => {
   connection('users')
-    .select('*')
+    .select('username', 'avatar_url', 'name')
     .then(users => res.send({ users }))
     .catch(next);
 };

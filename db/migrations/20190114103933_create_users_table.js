@@ -4,8 +4,9 @@ exports.up = function (knex, Promise) {
       .string('username')
       .primary()
       .unique();
-    table.string('avatar_url');
-    table.string('name');
+    table.string('avatar_url').notNullable();
+    table.string('name').notNullable();
+    table.string('password').notNullable();
   });
 };
 

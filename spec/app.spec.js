@@ -19,7 +19,7 @@ describe('/api', () => {
     .then(() => request
       .post('/login')
       .expect(200)
-      .send({ username: 'rob', password: 'password' }))
+      .send({ username: 'butter_bridge', password: 'password' }))
     .then(({ body: { token } }) => {
       request.set('Authorization', `BEARER ${token}`);
     }));
@@ -433,7 +433,7 @@ describe('/api', () => {
       .expect(401));
     it('should accept a correct password and respond with a token', () => request
       .post('/login')
-      .send({ username: 'rob', password: 'password' })
+      .send({ username: 'rogersop', password: 'password' })
       .expect(200)
       .then(({ body }) => {
         expect(body).to.have.property('token');

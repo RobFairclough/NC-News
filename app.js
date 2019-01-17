@@ -17,7 +17,7 @@ app.use('/api', apiRouter);
 // auth bonus
 app.post('/login', (req, res, next) => {
   const { username, password } = req.body;
-  connection('authorisations')
+  connection('users')
     .where('username', username)
     .then(([user]) => {
       if (user) return Promise.all([bcrypt.compare(password, user.password), user]);
