@@ -8,7 +8,7 @@ const {
   handle404, handle400, handle422, handle401, handle500,
 } = require('./errors');
 const connection = require('./db/connection');
-const { JWT_SECRET } = require('./passconfig');
+const JWT_SECRET = require('./passconfig');
 const { authorise } = require('./controllers/secure');
 
 app.use(bodyParser);
