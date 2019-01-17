@@ -331,10 +331,10 @@ describe('/api', () => {
           .post('/api/articles/1/comments')
           .send({ username: 'rogersop', sad: true })
           .expect(400));
-        it('POST request should respond status code 404 if not given an existing username', () => request
+        it.only('POST request should respond status code 400 if not given an existing username', () => request
           .post('/api/articles/1/comments')
           .send({ username: 'therealdonaldtrump', body: 'this is SAD and so am I' })
-          .expect(404));
+          .expect(400));
         it('POST request should respond status code 404 if posted to an article ID that doesnt exist', () => request
           .post('/api/articles/6969/comments')
           .send({ username: 'icellusedkars', body: 'real comment' })
