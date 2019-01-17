@@ -1,6 +1,7 @@
 exports.handle400 = (err, req, res, next) => {
   const codes400 = ['22P02', '23502', '23503'];
   if (codes400.includes(err.code) || err.status === 400) {
+        if (!err.constraint.startsWith('comment')) return next(err);
     return res.status(400).send({ msg: err.toString() });
   }
   return next(err);

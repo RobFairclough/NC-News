@@ -166,15 +166,15 @@ describe('/api', () => {
         .post('/api/topics/cats/articles')
         .send({ title: 'cats: have they stolen my body?', username: 'rogersop' })
         .expect(400));
-      it('POST request should return status 400 if the topic is not in the db', () => request
+      it('POST request should return status 404 if the topic is not in the db', () => request
         .post('/api/topics/dogs/articles')
         .send({
           title: 'The 25 dog-based languages you NEED to learn',
           username: 'rogersop',
           body: 'C(anine), Pupthon, Pupy, ChiuauaScript, Doge.js, Dolang, matLabrador',
         })
-        .expect(400));
-      it('POST request should return 400 if the username is not in the db', () => request
+        .expect(404));
+      it('POST request should return 404 if the username is not in the db', () => request
         .post('/api/topics/cats/articles')
         .send({
           title:
@@ -209,7 +209,6 @@ describe('/api', () => {
           'author',
           'title',
           'article_id',
-          'body',
           'votes',
           'comment_count',
           'created_at',
@@ -270,10 +269,10 @@ describe('/api', () => {
         .then(({ body }) => {
           expect(body.article.votes).to.equal(0);
         }));
-      it('PATCH request should respond status code 400 if not given required data', () => request
+      it('PATCH request should respond status code 200 if not given required data', () => request
         .patch('/api/articles/2')
         .send({ my_vote_is_that_the_article_should_gain_votes_in_the_number_of: 5 })
-        .expect(400));
+        .expect(200));
       it('PATCH request should respond status code 400 if given invalid article_id', () => request
         .patch('/api/articles/buspass')
         .send({ inc_votes: 5 })
@@ -315,7 +314,7 @@ describe('/api', () => {
               'body',
             );
           }));
-        it('GET request should accept a ?limit, ?sort_by and ?sort_ascending query, defaulting to 10, date and false respectively', () => request
+        it('GET request should accept a ?limit, ?sort_by and ?order query, defaulting to 10, date and desc respectively', () => request
           .get('/api/articles/1/comments')
           .expect(200)
           .then(({ body }) => {
@@ -323,8 +322,8 @@ describe('/api', () => {
             expect(body.comments[0].created_at).to.equal('2016-11-22');
             expect(body.comments[9].created_at).to.equal('2007-11-25');
           }));
-        it('GET request should accept a ?limit, ?sort_by and ?sort_ascending query, which can be set by the user', () => request
-          .get('/api/articles/1/comments?limit=5&sort_by=comment_id&sort_ascending=true')
+        it('GET request should accept a ?limit, ?sort_by and ?order query, which can be set by the user', () => request
+          .get('/api/articles/1/comments?limit=5&sort_by=comment_id&order=asc')
           .expect(200)
           .then(({ body }) => {
             expect(body.comments.length).to.equal(5);
@@ -353,18 +352,18 @@ describe('/api', () => {
                 );
               });
           }));
-        it('POST request should respond status code 400 if not given required data', () => request
+        it('POST request should respond status code 200 if not given required data', () => request
           .post('/api/articles/1/comments')
           .send({ username: 'rogersop', sad: true })
           .expect(400));
-        it('POST request should respond status code 400 if not given an existing username', () => request
+        it.only('POST request should respond status code 400 if not given an existing username', () => request
           .post('/api/articles/1/comments')
           .send({ username: 'therealdonaldtrump', body: 'this is SAD and so am I' })
           .expect(400));
-        it('POST request should respond status code 400 if posted to an article ID that doesnt exist', () => request
+        it('POST request should respond status code 404 if posted to an article ID that doesnt exist', () => request
           .post('/api/articles/6969/comments')
           .send({ username: 'icellusedkars', body: 'real comment' })
-          .expect(400));
+          .expect(404));
         it('Invalid request methods should return status 405', () => {
           const invalidMethods = ['put', 'patch', 'delete'];
           test405(invalidMethods, '/api/articles/1/comments').then(([response]) => expect(response.statusCode).to.equal(405));
@@ -377,10 +376,10 @@ describe('/api', () => {
             .then(({ body }) => {
               expect(body.comment.votes).to.equal(20);
             }));
-          it('PATCH request should respond status code 400 if not given required data', () => request
+          it('PATCH request should respond status code 200 and a non-updated object if not given required data', () => request
             .patch('/api/articles/1/comments/2')
             .send({ this: 'is a good comment and I like it' })
-            .expect(400));
+            .expect(200));
           it('PATCH request should respond status code 404 if no comment exists with the given id', () => request
             .patch('/api/articles/1/comments/246810')
             .send({ inc_votes: 45 })

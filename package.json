@@ -1,11 +1,11 @@
 {
-  "name": "BE2-NC-Knews",
+  "name": "be2-nc-knews",
   "version": "1.0.0",
   "description": "## Northcoders News API",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon listen.js",
-    "test": "mocha spec",
+    "test": "psql -f db/test_setup.sql && mocha spec",
     "lint": "eslint ./ --fix",
     "pre-commit": "npm t",
     "posttest": "npm run lint",
