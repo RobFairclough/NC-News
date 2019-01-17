@@ -1,10 +1,17 @@
 const ENV = process.env.NODE_ENV || 'development';
-const { DB_URL } = process.env;
+const { DATABASE_URL } = process.env;
 const knex = require('knex');
 const dbConfig = ENV === 'production'
   ? {
     client: 'pg',
-    connection: `${DB_URL}?ssl=true`,
+    connection: `${DATABASE_URL}?ssl=true`,
+    migrations: {
+      tableName: './seeds/migrations',
+
+      seeds: {
+        directory: './seeds',
+      },
+    },
   }
   : require('../knexfile')[ENV];
 

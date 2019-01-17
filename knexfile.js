@@ -1,4 +1,5 @@
 const { DB_URL } = process.env;
+
 module.exports = {
   development: {
     client: 'pg',
