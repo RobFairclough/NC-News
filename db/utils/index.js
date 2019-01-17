@@ -49,9 +49,14 @@ module.exports = {
   },
 
   formatUsers(rawUsers) {
-    return rawUsers.map(user => ({
-      ...user,
-      password: bcrypt.hashSync(user.password, 10),
-    }));
+    if (Array.isArray(rawUsers)) {
+      return rawUsers.map(user => ({
+        ...user,
+        password: bcrypt.hashSync(user.password, 10),
+      }));
+    }
+    const user = { ...rawUsers };
+    user.password = bcrypt.hashSync(rawUsers.password, 10);
+    return user;
   },
 };

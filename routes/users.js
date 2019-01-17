@@ -7,11 +7,12 @@ usersRouter.get('/:username', sendUserByUsername);
 usersRouter
   .route('/')
   .get(sendAllUsers)
+  .post(saveNewUser)
   .all(handle405);
+
 usersRouter
   .route('/:username')
   .get(sendUserByUsername)
-  .post(saveNewUser)
   .all(handle405);
 
 module.exports = usersRouter;

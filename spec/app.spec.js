@@ -26,9 +26,7 @@ describe('/api', () => {
   after(() => {
     connection.destroy();
   });
-  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request
-    .get('/api')
-    .expect(200));
+  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request.get('/api').expect(200));
 
   describe('/topics', () => {
     const topicsUrl = '/api/topics';
@@ -185,9 +183,16 @@ describe('/api', () => {
           body: 'cook the birb pls',
         })
         .expect(400));
-      it('unauthorised POST request should return status 401', () => request.post('/api/topics/cats/articles').expect(401)
+      it('unauthorised POST request should return status 401', () => request
+        .post('/api/topics/cats/articles')
+        .expect(401)
         .set('Authorization', 'invalid')
-        .send({ title: 'I dont need a password', username: 'rogersop', body: 'reasons why authentication is for squares and why i will be posting an article regardless' }));
+        .send({
+          title: 'I dont need a password',
+          username: 'rogersop',
+          body:
+              'reasons why authentication is for squares and why i will be posting an article regardless',
+        }));
       it('invalid request methods should return status 405', () => {
         const invalidMethods = ['put', 'patch', 'delete'];
         test405(invalidMethods, '/api/topics/cats/articles').then(([response]) => expect(response.statusCode).to.equal(405));
@@ -392,7 +397,7 @@ describe('/api', () => {
     });
   });
 
-  describe('/users', () => {
+  describe.only('/users', () => {
     it('GET request should respond status 200 and give an array of user objects with properties username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
@@ -400,8 +405,27 @@ describe('/api', () => {
         expect(body.users[0]).to.have.all.keys('username', 'avatar_url', 'name');
         expect(body.users.length).to.equal(3);
       }));
+    it('POST request should respond status 201 and return the new user object', () => request
+      .post('/api/users')
+      .send({
+        username: 'rob',
+        password: 'password',
+        avatar_url:
+            'https://www.gettyimages.co.uk/gi-resources/images/CreativeLandingPage/HP_Sept_24_2018/CR3_GettyImages-159018836.jpg',
+        name: 'rob',
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.new_user).to.have.all.keys('username', 'avatar_url', 'name');
+      }));
+    it('POST request should return status 400 if required data is not given', () => request
+      .post('/api/users')
+      .send({
+        username: 'rob',
+        password: 'hello',
+      }).expect(400));
     it('Invalid request methods should return status 405', () => {
-      const invalidMethods = ['put', 'patch', 'delete', 'post'];
+      const invalidMethods = ['put', 'patch', 'delete'];
       test405(invalidMethods, '/api/users');
     });
     describe('/users/:username', () => {

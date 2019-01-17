@@ -17,19 +17,25 @@ app.use('/api', apiRouter);
 // auth bonus
 app.post('/login', (req, res, next) => {
   const { username, password } = req.body;
-  connection('users')
+  if (!username || !password) return next({ status: 401, msg: 'invalid login' });
+  return connection('users')
     .where('username', username)
     .then(([user]) => {
-      if (user) return Promise.all([bcrypt.compare(password, user.password), user]);
-      return next({ status: 401, msg: 'invalid login' });
-    })
-    .then(([passwordOk, user]) => {
-      if (user && passwordOk) {
-        const token = jwt.sign({ user: user.username, iat: Date.now() }, JWT_SECRET);
-        res.status(200).send({ token });
-      } else {
-        next({ status: 401, msg: 'invalid login' });
+      if (user) {
+        return Promise.all([bcrypt.compare(password, user.password), user]).then(
+          ([passwordOk, authorisedUser]) => {
+            if (authorisedUser && passwordOk) {
+              const token = jwt.sign(
+                { user: authorisedUser.username, iat: Date.now() },
+                JWT_SECRET,
+              );
+              return res.status(200).send({ token });
+            }
+            return next({ status: 401, msg: 'invalid login' });
+          },
+        );
       }
+      return next({ status: 401, msg: 'invalid login' });
     })
     .catch(next);
 });
@@ -42,7 +48,4 @@ app.use(handle401);
 app.use(handle422);
 app.use(handle404);
 app.use(handle500);
-app.use((err, req, res, next) => {
-  res.status(500).send({ msg: 'internal server error' });
-});
 module.exports = app;

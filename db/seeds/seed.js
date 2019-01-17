@@ -1,5 +1,5 @@
 const {
-  topicData, articleData, userData, commentData, authData,
+  topicData, articleData, userData, commentData,
 } = require('../data');
 const {
   renameColumn,
