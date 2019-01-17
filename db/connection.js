@@ -9,7 +9,7 @@ const dbConfig = ENV === 'production'
     client: 'pg',
     connection: `${DATABASE_URL}?ssl=true`,
     migrations: {
-      tableName: './seeds/migrations',
+      directory: '/migrations',
 
       seeds: {
         directory: './seeds',
