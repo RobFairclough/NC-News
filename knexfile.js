@@ -25,9 +25,8 @@ module.exports = {
       directory: './db/seeds',
     },
   },
-
   production: {
-    client: 'postgresql',
+    client: 'pg',
     connection: `${DB_URL}?ssl=true`,
     migrations: {
       tableName: './db/seeds/migrations',
