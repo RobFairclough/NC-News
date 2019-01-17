@@ -5,6 +5,7 @@ exports.handle400 = (err, req, res, next) => {
   } else next(err);
 };
 exports.handle401 = (err, req, res, next) => {
+  console.log(err);
   if (err.status === 401) res.status(401).send(err);
   else next(err);
 };
@@ -15,6 +16,7 @@ exports.handle422 = (err, req, res, next) => {
 };
 
 exports.handle404 = (err, req, res, next) => {
+  console.log(err);
   res.status(404).send({ msg: err.message });
 };
 

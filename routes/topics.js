@@ -5,10 +5,12 @@ const {
   sendArticlesByTopic,
   saveNewArticleInTopic,
 } = require('../controllers/topics');
+const { authorise } = require('../controllers/secure');
 const { handle405 } = require('../errors');
 
 topicsRouter
   .route('/')
+  .get(authorise)
   .get(sendAllTopics)
   .post(saveNewTopic)
   .all(handle405);
