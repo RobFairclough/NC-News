@@ -15,15 +15,20 @@ describe('/api', () => {
     .rollback()
     .then(() => connection.migrate.latest())
     .then(() => connection.seed.run())
-    .then(() => request.post('/login').expect(200).send({ username: 'rob', password: 'password' }))
+    .then(() => request
+      .post('/login')
+      .expect(200)
+      .send({ username: 'rob', password: 'password' }))
     .then(({ body: { token } }) => {
       validToken = token;
     }));
   after(() => {
     connection.destroy();
   });
-  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request.get('/api')
-    .set('Authorization', `BEARER ${validToken}`).expect(200));
+  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request
+    .get('/api')
+    .set('Authorization', `BEARER ${validToken}`)
+    .expect(200));
 
   describe('/topics', () => {
     const topicsUrl = '/api/topics';
@@ -40,6 +45,7 @@ describe('/api', () => {
       const testObj = { slug: 'test', description: 'this is a test' };
       return request
         .post(topicsUrl)
+        .set('Authorization', `BEARER ${validToken}`)
         .send(testObj)
         .expect(201)
         .then(({ body }) => {
@@ -50,6 +56,7 @@ describe('/api', () => {
       const testObj = { slug: 'mitch', description: 'duplicate slug' };
       return request
         .post(topicsUrl)
+        .set('Authorization', `BEARER ${validToken}`)
         .send(testObj)
         .expect(422)
         .then(({ body }) => {
@@ -60,6 +67,7 @@ describe('/api', () => {
       const testObj = { slug: 'test' };
       return request
         .post(topicsUrl)
+        .set('Authorization', `BEARER ${validToken}`)
         .send(testObj)
         .expect(400);
     });
@@ -67,8 +75,16 @@ describe('/api', () => {
       const testObj = { description: 'test' };
       return request
         .post(topicsUrl)
+        .set('Authorization', `BEARER ${validToken}`)
         .send(testObj)
         .expect(400);
+    });
+    it('POST request at /topics should return status 401 if unauthorised', () => {
+      const testObj = { description: 'this aint', slug: 'authorised' };
+      return request
+        .post(topicsUrl)
+        .send(testObj)
+        .expect(401);
     });
     it('Invalid request methods should return status 405', () => {
       const invalidMethods = ['put', 'patch', 'delete'];
@@ -139,6 +155,7 @@ describe('/api', () => {
         };
         return request
           .post('/api/topics/cats/articles')
+          .set('Authorization', `BEARER ${validToken}`)
           .send(testObj)
           .expect(201)
           .then(({ body }) => {
@@ -153,10 +170,12 @@ describe('/api', () => {
       });
       it('POST request should only accept an article if given properties title, body and username, returning status 400 if unsuccessful', () => request
         .post('/api/topics/cats/articles')
+        .set('Authorization', `BEARER ${validToken}`)
         .send({ title: 'cats: have they stolen my body?', username: 'rogersop' })
         .expect(400));
       it('POST request should return status 400 if the topic is not in the db', () => request
         .post('/api/topics/dogs/articles')
+        .set('Authorization', `BEARER ${validToken}`)
         .send({
           title: 'The 25 dog-based languages you NEED to learn',
           username: 'rogersop',
@@ -165,6 +184,7 @@ describe('/api', () => {
         .expect(400));
       it('POST request should return 400 if the username is not in the db', () => request
         .post('/api/topics/cats/articles')
+        .set('Authorization', `BEARER ${validToken}`)
         .send({
           title:
               'Why its not a bad thing that cats leave dead birds and rodents in your house, and fun DIY recipes to make use of them!',
@@ -172,6 +192,8 @@ describe('/api', () => {
           body: 'cook the birb pls',
         })
         .expect(400));
+      it('unauthorised POST request should return status 401', () => request.post('/api/topics/cats/articles')
+        .send({ title: 'I dont need a password', username: 'rogersop', body: 'reasons why authentication is for squares and why i will be posting an article regardless' }));
       it('invalid request methods should return status 405', () => {
         const invalidMethods = ['put', 'patch', 'delete'];
         test405(invalidMethods, '/api/topics/cats/articles').then(([response]) => expect(response.statusCode).to.equal(405));
@@ -406,7 +428,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/login', () => {
+  describe('/login', () => {
     it('should respond status 401 and not login with an incorrect password', () => request
       .post('/login')
       .send({ username: 'rob', password: 'WRONG' })

@@ -8,6 +8,7 @@ const {
 } = require('./errors');
 const connection = require('./db/connection');
 const { JWT_SECRET } = require('./passconfig');
+const { authorise } = require('./controllers/secure');
 
 app.use(bodyParser);
 app.use('/api', apiRouter);
@@ -23,24 +24,10 @@ app.post('/login', (req, res, next) => {
         // correct details
         const token = jwt.sign({ user: user.username, iat: Date.now() }, JWT_SECRET);
         res.status(200).send({ token });
-        console.log({ token });
       }
     });
 });
-app.use('/secure', (req, res, next) => {
-  const { authorization } = req.headers;
-  console.log(authorization);
-  const token = authorization.split(' ')[1];
-  jwt.verify(token, JWT_SECRET, (err, response) => {
-    if (err) {
-      console.log(err);
-      next({ status: 401, msg: 'Unauthorised' });
-    } else {
-      console.log(response);
-      next();
-    }
-  });
-});
+app.use('/secure', authorise);
 app.use('/secure', secureRouter);
 // error handling
 

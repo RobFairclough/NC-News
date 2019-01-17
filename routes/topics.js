@@ -10,14 +10,15 @@ const { handle405 } = require('../errors');
 
 topicsRouter
   .route('/')
-  .get(authorise)
   .get(sendAllTopics)
+  .post(authorise)
   .post(saveNewTopic)
   .all(handle405);
 
 topicsRouter
   .route('/:topic/articles')
   .get(sendArticlesByTopic)
+  .post(authorise)
   .post(saveNewArticleInTopic)
   .all(handle405);
 
