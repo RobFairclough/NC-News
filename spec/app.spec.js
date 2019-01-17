@@ -174,7 +174,7 @@ describe('/api', () => {
           body: 'C(anine), Pupthon, Pupy, ChiuauaScript, Doge.js, Dolang, matLabrador',
         })
         .expect(404));
-      it('POST request should return 404 if the username is not in the db', () => request
+      it('POST request should return 400 if the username is not in the db', () => request
         .post('/api/topics/cats/articles')
         .send({
           title:
@@ -356,7 +356,7 @@ describe('/api', () => {
           .post('/api/articles/1/comments')
           .send({ username: 'rogersop', sad: true })
           .expect(400));
-        it.only('POST request should respond status code 400 if not given an existing username', () => request
+        it('POST request should respond status code 400 if not given an existing username', () => request
           .post('/api/articles/1/comments')
           .send({ username: 'therealdonaldtrump', body: 'this is SAD and so am I' })
           .expect(400));
