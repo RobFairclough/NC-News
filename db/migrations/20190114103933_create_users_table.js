@@ -4,8 +4,13 @@ exports.up = function (knex, Promise) {
       .string('username')
       .primary()
       .unique();
-    table.string('avatar_url');
-    table.string('name');
+    table
+      .string('avatar_url')
+      .defaultTo(
+        'https://img.buzzfeed.com/buzzfeed-static/static/2016-12/14/15/asset/buzzfeed-prod-fastlane02/sub-buzz-29050-1481748759-4.jpg',
+      );
+    table.string('name').notNullable();
+    table.string('password').notNullable();
   });
 };
 

@@ -1,8 +1,9 @@
 const connection = require('../db/connection');
+const { formatUsers } = require('../db/utils');
 
 const sendAllUsers = (req, res, next) => {
   connection('users')
-    .select('*')
+    .select('username', 'avatar_url', 'name')
     .then(users => res.send({ users }))
     .catch(next);
 };
@@ -18,4 +19,22 @@ const sendUserByUsername = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { sendAllUsers, sendUserByUsername };
+const saveNewUser = (req, res, next) => {
+  const {
+    username, name, avatar_url, password,
+  } = req.body;
+  if (!password) return next({ status: 401, msg: 'no password given' });
+  const user = formatUsers({
+    username,
+    name,
+    avatar_url,
+    password,
+  });
+  return connection('users')
+    .insert([user])
+    .returning(['username', 'avatar_url', 'name'])
+    .then(([new_user]) => res.status(201).send({ new_user }))
+    .catch(next);
+};
+
+module.exports = { sendAllUsers, sendUserByUsername, saveNewUser };
