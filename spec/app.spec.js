@@ -289,7 +289,7 @@ describe('/api', () => {
               'body',
             );
           }));
-        it('GET request should accept a ?limit, ?sort_by and ?sort_ascending query, defaulting to 10, date and false respectively', () => request
+        it('GET request should accept a ?limit, ?sort_by and ?order query, defaulting to 10, date and desc respectively', () => request
           .get('/api/articles/1/comments')
           .expect(200)
           .then(({ body }) => {
@@ -297,8 +297,8 @@ describe('/api', () => {
             expect(body.comments[0].created_at).to.equal('2016-11-22');
             expect(body.comments[9].created_at).to.equal('2007-11-25');
           }));
-        it('GET request should accept a ?limit, ?sort_by and ?sort_ascending query, which can be set by the user', () => request
-          .get('/api/articles/1/comments?limit=5&sort_by=comment_id&sort_ascending=true')
+        it('GET request should accept a ?limit, ?sort_by and ?order query, which can be set by the user', () => request
+          .get('/api/articles/1/comments?limit=5&sort_by=comment_id&order=asc')
           .expect(200)
           .then(({ body }) => {
             expect(body.comments.length).to.equal(5);

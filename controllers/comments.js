@@ -3,9 +3,8 @@ const { reformatDate } = require('../db/utils');
 
 const sendCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  // sort_ascending asked for in spec but inconsistent with other GET queries
   const {
-    limit = 10, sort_by = 'created_at', p = 1, sort_ascending = false,
+    limit = 10, sort_by = 'created_at', p = 1, order = 'desc',
   } = req.query;
   const offset = limit * (p - 1);
   connection('comments')
@@ -13,7 +12,7 @@ const sendCommentsByArticleId = (req, res, next) => {
     .where('article_id', article_id)
     .limit(limit)
     .offset(offset)
-    .orderBy(sort_by, sort_ascending === 'true' ? 'asc' : 'desc')
+    .orderBy(sort_by, order === 'asc' ? 'asc' : 'desc')
     .then((comments) => {
       if (!comments.length) return Promise.reject({ status: 404, msg: '404 not found' });
       reformatDate(comments);
