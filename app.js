@@ -25,19 +25,19 @@ app.post('/login', (req, res, next) => {
 });
 app.use((req, res, next) => {
   const { authorization } = req.headers;
+  console.log(authorization);
   const token = authorization.split(' ')[1];
-  jwt.verify(token, JWT_SECRET, (err, res) => {
+  jwt.verify(token, JWT_SECRET, (err, response) => {
     if (err) {
       console.log(err);
       next({ status: 401, msg: 'Unauthorised' });
     } else {
-      console.log(res);
+      console.log(response);
       next();
     }
   });
 });
 app.use('/api', apiRouter);
-
 
 // error handling
 

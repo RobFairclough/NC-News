@@ -10,14 +10,20 @@ const test405 = (invalidMethods, path) => {
   return Promise.all(invalidRequests);
 };
 describe('/api', () => {
+  let validToken;
   beforeEach(() => connection.migrate
     .rollback()
     .then(() => connection.migrate.latest())
-    .then(() => connection.seed.run()));
+    .then(() => connection.seed.run())
+    .then(() => request.post('/login').expect(200).send({ username: 'rob', password: 'password' }))
+    .then(({ body: { token } }) => {
+      validToken = token;
+    }));
   after(() => {
     connection.destroy();
   });
-  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request.get('/api').expect(200));
+  it('GET request should respond with a JSON object describing all available endpoints on the API', () => request.get('/api')
+    .set('Authorization', `BEARER ${validToken}`).expect(200));
 
   describe('/topics', () => {
     const topicsUrl = '/api/topics';
