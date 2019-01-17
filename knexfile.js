@@ -30,10 +30,10 @@ module.exports = {
     client: 'postgresql',
     connection: `${DB_URL}?ssl=true`,
     migrations: {
-      tableName: './seed/migrations',
+      tableName: './db/seeds/migrations',
     },
     seeds: {
-      directory: './seed',
+      directory: './db/seeds',
     },
   },
 };
