@@ -1,4 +1,2 @@
-const env = process.env.NODE_ENV || 'development';
-const { JWT_SECRET } = process.env || 'orange';
-
+const JWT_SECRET = process.env.JWT_SECRET || 'orange';
 module.exports = JWT_SECRET;
