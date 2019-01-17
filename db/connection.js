@@ -1,8 +1,5 @@
 const ENV = process.env.NODE_ENV || 'development';
 const { DATABASE_URL } = process.env;
-const { DB_URL } = process.env;
-console.log(DATABASE_URL);
-console.log(DB_URL);
 const knex = require('knex');
 const dbConfig = ENV === 'production'
   ? {
