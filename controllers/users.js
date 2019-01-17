@@ -18,4 +18,11 @@ const sendUserByUsername = (req, res, next) => {
     .catch(next);
 };
 
+const saveNewUser = (req, res, next) => {
+  const {
+    username, name, avatar_url, password,
+  } = req.body;
+  const user = formatUsers([[username, name, avatar_url, password]]);
+};
+
 module.exports = { sendAllUsers, sendUserByUsername };
