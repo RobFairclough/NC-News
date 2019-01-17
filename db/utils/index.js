@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 module.exports = {
   changeTimestampToDate(array) {
     return array.map((element) => {
@@ -44,5 +46,12 @@ module.exports = {
         obj.created_at = JSON.stringify(obj.created_at).slice(1, 11);
       });
     } else arr.created_at = JSON.stringify(arr.created_at).slice(1, 11);
+  },
+
+  formatUsers(rawUsers) {
+    return rawUsers.map(user => ({
+      ...user,
+      password: bcrypt.hashSync(user.password, 10),
+    }));
   },
 };

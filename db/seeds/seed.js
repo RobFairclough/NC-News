@@ -1,9 +1,12 @@
 const {
   topicData, articleData, userData, commentData, authData,
 } = require('../data');
-
 const {
-  renameColumn, changeTimestampToDate, getArticleIds, setArticleIds,
+  renameColumn,
+  changeTimestampToDate,
+  getArticleIds,
+  setArticleIds,
+  formatUsers,
 } = require('../utils');
 
 exports.seed = (knex, Promise) => knex('topics')
@@ -20,6 +23,6 @@ exports.seed = (knex, Promise) => knex('topics')
     return knex('comments')
       .insert(setArticleId)
       .then(() => knex('authorisations')
-        .insert(authData)
+        .insert(formatUsers(authData))
         .returning('*'));
   });

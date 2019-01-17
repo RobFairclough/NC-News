@@ -23,6 +23,7 @@ articlesRouter
   .route('/:article_id')
   .get(sendArticleById)
   .patch(sendArticleVotes)
+  .delete(authorise)
   .delete(deleteArticle)
   .all(handle405);
 
@@ -35,6 +36,7 @@ articlesRouter
 articlesRouter
   .route('/:article_id/comments/:comment_id')
   .patch(sendCommentVotes)
+  .delete(authorise)
   .delete(deleteComment)
   .all(handle405);
 

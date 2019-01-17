@@ -1,5 +1,6 @@
 const app = require('express')();
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser').json();
 const apiRouter = require('./routes/api');
 const secureRouter = require('./routes/secure');
@@ -19,13 +20,18 @@ app.post('/login', (req, res, next) => {
   connection('authorisations')
     .where('username', username)
     .then(([user]) => {
-      if (!user || user.password !== password) handle401({ status: 401, msg: 'invalid login' }, req, res, next);
-      else {
-        // correct details
+      if (user) return Promise.all([bcrypt.compare(password, user.password), user]);
+      return next({ status: 401, msg: 'invalid login' });
+    })
+    .then(([passwordOk, user]) => {
+      if (user && passwordOk) {
         const token = jwt.sign({ user: user.username, iat: Date.now() }, JWT_SECRET);
         res.status(200).send({ token });
+      } else {
+        next({ status: 401, msg: 'invalid login' });
       }
-    });
+    })
+    .catch(next);
 });
 app.use('/secure', authorise);
 app.use('/secure', secureRouter);
