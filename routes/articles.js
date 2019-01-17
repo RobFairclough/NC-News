@@ -12,6 +12,7 @@ const {
   deleteComment,
 } = require('../controllers/comments');
 const { handle405 } = require('../errors');
+const { authorise } = require('../controllers/secure');
 
 articlesRouter
   .route('/')
