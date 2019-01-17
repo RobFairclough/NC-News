@@ -5,13 +5,6 @@ const dbConfig = ENV === 'production'
   ? {
     client: 'pg',
     connection: `${DB_URL}?ssl=true`,
-    migrations: {
-      tableName: './seeds/migrations',
-
-      seeds: {
-        directory: './seeds',
-      },
-    },
   }
   : require('../knexfile')[ENV];
 

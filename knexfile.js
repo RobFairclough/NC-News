@@ -29,7 +29,7 @@ module.exports = {
     client: 'pg',
     connection: `${DB_URL}?ssl=true`,
     migrations: {
-      tableName: './seeds/migrations',
+      directory: './migrations',
     },
     seeds: {
       directory: './seeds',
