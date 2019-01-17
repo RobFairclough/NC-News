@@ -1,4 +1,5 @@
 const connection = require('../db/connection');
+const formatUsers = require('../db/utils');
 
 const sendAllUsers = (req, res, next) => {
   connection('users')
@@ -22,7 +23,10 @@ const saveNewUser = (req, res, next) => {
   const {
     username, name, avatar_url, password,
   } = req.body;
-  const user = formatUsers([[username, name, avatar_url, password]]);
+  const user = formatUsers([{
+    username, name, avatar_url, password,
+  }]);
+  connection('users').insert([user]);
 };
 
 module.exports = { sendAllUsers, sendUserByUsername };
