@@ -418,6 +418,17 @@ describe('/api', () => {
       .then(({ body }) => {
         expect(body.new_user).to.have.all.keys('username', 'avatar_url', 'name');
       }));
+    it('POST request should create a user that is able to log in', () => request.post('/api/users')
+      .send({
+        username: 'log',
+        name: 'log',
+        password: 'cabin',
+      }).expect(201).then(() => request.post('/login')
+        .send({ username: 'log', password: 'cabin' })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).to.have.property('token');
+        })));
     it('POST request should return status 400 if required data is not given', () => request
       .post('/api/users')
       .send({
