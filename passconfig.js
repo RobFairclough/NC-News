@@ -7,6 +7,9 @@ const config = {
   test: {
     JWT_SECRET: 'orange',
   },
+  production: {
+    JWT_SECRET: process.env,
+  },
 };
 
 module.exports = config[env];
