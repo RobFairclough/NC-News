@@ -111,8 +111,10 @@ module.exports = {
 };
 ```
 
-5. To start the api's server running locally, you can run npm start to run the server in Node or npm run dev to run the server in Nodemon.
-6. The server will then be available to send requests to and retrive data
+5. To create the database, we need to run `psql -f ./db/dev-setup.sql`, this will create an empty database for us to insert our data into.
+6. To add data to our new database, we will run `npm run seed` - this will run our migrations to create tables in the database, then insert the data in /db/data/development-data.
+7. To start the api's server running locally, you can run npm start to run the server in Node or npm run dev to run the server in Nodemon.
+8. The server will then be available to send requests to and retrive data
 
 ```
   GET localhost:9000/api/topics
