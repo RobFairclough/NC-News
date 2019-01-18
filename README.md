@@ -67,6 +67,8 @@ brew install postgresql
 4. Create a knexfile.js in the project root directory to allow knex to access your database., the contents of this should look like :
 
 ```js
+const { DB_URL } = process.env;
+
 module.exports = {
   development: {
     client: 'pg',
@@ -87,8 +89,8 @@ module.exports = {
     client: 'pg',
     connection: {
       database: 'nc_knews_test',
-      username: <'your postgres username (linux only)'>,
-      password: <'postgres password (linux only)'>
+      // username: <'your postgres username (linux only)'>,
+      // password: <'postgres password (linux only)'>
     },
     migrations: {
       directory: './migrations',
