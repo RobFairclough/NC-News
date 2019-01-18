@@ -241,6 +241,7 @@ heroku config:set JWT_SECRET=<your secret recommended 64+ chars>
 - [bcrypt](https://www.npmjs.com/package/bcrypt) - Encryption for user passwords
 - [Supertest](https://github.com/visionmedia/supertest) - Used to run tests on http requests on each of the endpoints
 - [Postman](https://www.getpostman.com/) - Used in development to run requests on the API
+- [Mocha](https://mochajs.org) - Test framwork
 
 ## Contributing
 
