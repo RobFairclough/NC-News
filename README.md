@@ -5,6 +5,48 @@ NC Knews is an API built to serve the front-end Northcoders News Sprint.
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+To get this project running locally:
+
+1. Fork this repo
+2. Clone down to your local machine
+3. Open the project directory in your terminal and run 'npm install' to install the required dependencies
+4. Create a knexfile.js in the project root directory to allow knex to access your database., the contents of this should look like :
+
+```json
+module.exports = {
+  development: {
+    client: 'pg',
+    connection: {
+      database: 'nc_knews_dev',
+      username: <your postgres username (linux only)>,
+      password: <postgres password (linux only)>
+    },
+    migrations: {
+      directory: './migrations',
+    },
+    seeds: {
+      directory: './seeds',
+    },
+  },
+
+  test: {
+    client: 'pg',
+    connection: {
+      database: 'nc_knews_test',
+      username: <your postgres username (linux only)>,
+      password: <postgres password (linux only)>
+    },
+    migrations: {
+      directory: './migrations',
+    },
+    seeds: {
+      directory: './seeds',
+    },
+  },
+};
+```
+
+5.
 
 ### Prerequisites
 
