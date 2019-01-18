@@ -72,9 +72,9 @@ module.exports = {
     client: 'pg',
     connection: {
       database: 'nc_knews_dev',
-      username: <your postgres username (linux only)>,
-      password: <postgres password (linux only)>
+      password: <'postgres password (linux only)'>
     },
+      username: <'your postgres username (linux only)'>,
     migrations: {
       directory: './migrations',
     },
@@ -87,8 +87,8 @@ module.exports = {
     client: 'pg',
     connection: {
       database: 'nc_knews_test',
-      username: <your postgres username (linux only)>,
-      password: <postgres password (linux only)>
+      username: <'your postgres username (linux only)'>,
+      password: <'postgres password (linux only)'>
     },
     migrations: {
       directory: './migrations',
