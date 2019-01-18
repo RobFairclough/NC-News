@@ -9,6 +9,16 @@
         }
       }
     },
+    "login": {
+      "POST": {
+        "url": "/login",
+        "description": "allows a user to login with a username and password and receive a JavaScript Web Token(JWT) to access restricted routes",
+        "body": { "username": "string", "password": "string" },
+        "response": {
+          "key": "a JWT to put in future request headers - set Authorization header to BEARER<key>"
+        }
+      }
+    },
     "topics": {
       "GET": {
         "get all topics": {
