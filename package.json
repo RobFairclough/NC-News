@@ -15,7 +15,7 @@
     "seed:run": "knex seed:run",
     "seed": "npm run migrate:rollback && npm run migrate:latest && npm run seed:run",
     "start": "node listen.js",
-    "seed:prod": "DB_URL=$(heroku config:get DATABASE_URL) npm run migrate:rollback:prod && npm run migrate:latest:prod && knex seed:run --env production",
+    "seed:prod": "DB_URL=$(heroku config:get DATABASE_URL) npm run migrate:rollback:prod && npm run migrate:latest:prod && DB_URL=$(heroku config:get DATABASE_URL) knex seed:run --env production",
     "migrate:latest:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:latest --env production",
     "migrate:rollback:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:rollback --env production"
   },

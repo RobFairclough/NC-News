@@ -43,6 +43,17 @@ module.exports = {
       directory: './seeds',
     },
   },
+  production: {
+    client: 'pg',
+    connection: `${DB_URL}?ssl=true`,
+    migrations: {
+      directory: './migrations',
+
+      seeds: {
+        directory: './seeds',
+      },
+    },
+  },
 };
 ```
 

@@ -1,10 +1,10 @@
 const ENV = process.env.NODE_ENV || 'development';
-const { DATABASE_URL } = process.env;
+const { DB_URL } = process.env;
 const knex = require('knex');
 const dbConfig = ENV === 'production'
   ? {
     client: 'pg',
-    connection: `${DATABASE_URL}?ssl=true`,
+    connection: `${DB_URL}?ssl=true`,
     migrations: {
       directory: './migrations',
 
