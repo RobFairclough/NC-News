@@ -57,6 +57,8 @@ Running this API locally will require PostgreSQL, Node, NPM and a terminal, to e
 brew install postgresql
 ```
 
+- Optional - Postman is software to send HTTP requests and is very useful for using this api. [Postman](https://www.getpostman.com/)
+
 [Here](https://www.codementor.io/engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb) is a guide on getting started with postgres. You will only need to get yourself logged in and the psql server running to use this project. Minimum version 10.6 required - you can check your Postgres version by running `psql --version` in your terminal.
 
 ### Installation
@@ -238,6 +240,7 @@ heroku config:set JWT_SECRET=<your secret recommended 64+ chars>
 - [JWT](https://jwt.io/) - JavaScript Web Tokens for tokening logins
 - [bcrypt](https://www.npmjs.com/package/bcrypt) - Encryption for user passwords
 - [Supertest](https://github.com/visionmedia/supertest) - Used to run tests on http requests on each of the endpoints
+- [Postman](https://www.getpostman.com/) - Used in development to run requests on the API
 
 ## Contributing
 
