@@ -66,7 +66,7 @@ brew install postgresql
 3. Open the project directory in your terminal and run 'npm install' to install the required dependencies
 4. Create a knexfile.js in the project root directory to allow knex to access your database., the contents of this should look like :
 
-```json
+```js
 module.exports = {
   development: {
     client: 'pg',
