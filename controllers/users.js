@@ -42,7 +42,7 @@ const updateUserDetails = (req, res, next) => {
   connection('users')
     .where('username', username)
     .update(req.body)
-    .returning('*')
+    .returning(['username', 'avatar_url', 'name'])
     .then(([user]) => (user ? res.send({ user }) : Promise.reject({ status: 404, msg: 'user not found' })))
     .catch(next);
 };
