@@ -2,6 +2,7 @@ const app = require('express')();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser').json();
+const cors = require('cors');
 const apiRouter = require('./routes/api');
 const secureRouter = require('./routes/secure');
 const {
@@ -11,6 +12,7 @@ const connection = require('./db/connection');
 const JWT_SECRET = require('./passconfig');
 const { authorise } = require('./controllers/secure');
 
+app.use(cors());
 app.use(bodyParser);
 app.use('/api', apiRouter);
 app.get('/', (req, res) => res.send('homepage'));
