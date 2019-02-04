@@ -150,7 +150,7 @@
       "POST": {
         "create a new user": {
           "url": "/api/users",
-          "description": "(LOGIN required) add a new user to the database",
+          "description": "add a new user to the database",
           "body": {
             "username": "string",
             "name": "string",
