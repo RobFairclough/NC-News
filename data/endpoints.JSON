@@ -160,7 +160,7 @@
           "response": "created user object (without password)"
         }
       },
-      "PATCH":{
+      "PATCH": {
         "update a user's details": {
           "url": "/api/users/:username",
           "description": "update a user's name or avatar_url",
@@ -169,7 +169,7 @@
             "avatar_url": "string(optional)"
           }
         }
-      }}
+      }
     }
   }
 }
