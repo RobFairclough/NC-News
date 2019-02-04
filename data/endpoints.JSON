@@ -155,11 +155,21 @@
             "username": "string",
             "name": "string",
             "password": "string",
-            "avatar_url": "string(optional"
+            "avatar_url": "string(optional)"
           },
           "response": "created user object (without password)"
         }
-      }
+      },
+      "PATCH":{
+        "update a user's details": {
+          "url": "/api/users/:username",
+          "description": "update a user's name or avatar_url",
+          "body": {
+            "name": "string(optional)",
+            "avatar_url": "string(optional)"
+          }
+        }
+      }}
     }
   }
 }

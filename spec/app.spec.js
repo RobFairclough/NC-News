@@ -417,12 +417,16 @@ describe('/api', () => {
       .then(({ body }) => {
         expect(body.new_user).to.have.all.keys('username', 'avatar_url', 'name');
       }));
-    it('POST request should create a user that is able to log in', () => request.post('/api/users')
+    it('POST request should create a user that is able to log in', () => request
+      .post('/api/users')
       .send({
         username: 'log',
         name: 'log',
         password: 'cabin',
-      }).expect(201).then(() => request.post('/login')
+      })
+      .expect(201)
+      .then(() => request
+        .post('/login')
         .send({ username: 'log', password: 'cabin' })
         .expect(200)
         .then(({ body }) => {
@@ -433,7 +437,8 @@ describe('/api', () => {
       .send({
         username: 'rob',
         password: 'hello',
-      }).expect(400));
+      })
+      .expect(400));
     it('Invalid request methods should return status 405', () => {
       const invalidMethods = ['put', 'patch', 'delete'];
       test405(invalidMethods, '/api/users');
@@ -451,9 +456,26 @@ describe('/api', () => {
         }));
       it('GET request should respond status 404 if no users exist by that usename', () => request.get('/api/users/robfairclough').expect(404));
       it('Invalid request methods should return status 405', () => {
-        const invalidMethods = ['put', 'patch', 'delete'];
+        const invalidMethods = ['put', 'delete'];
         test405(invalidMethods, '/api/users/butter_bridge').then(([response]) => expect(response.statusCode).to.equal(405));
       });
+      it('PATCH request should respond status 200 with an updated user object with a successful request', () => {
+        const updated = {
+          avatar_url: 'http://www.stickpng.com/assets/images/580b585b2edbce24c47b2be1.png',
+          name: 'Johnny Test',
+        };
+        return request
+          .patch('/api/users/butter_bridge')
+          .send(updated)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.user.avatar_url).to.equal(updated.avatar_url);
+            expect(body.user.name).to.equal(updated.name);
+          });
+      });
+      it('PATCH request should not respond status 404 if no user exists with that username', () => request.patch('/api/users/imaginary')
+        .send({ name: 'bloo' })
+        .expect(404));
     });
   });
   describe('/login', () => {

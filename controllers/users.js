@@ -37,4 +37,19 @@ const saveNewUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { sendAllUsers, sendUserByUsername, saveNewUser };
+const updateUserDetails = (req, res, next) => {
+  const { username } = req.params;
+  connection('users')
+    .where('username', username)
+    .update(req.body)
+    .returning('*')
+    .then(([user]) => (user ? res.send({ user }) : Promise.reject({ status: 404, msg: 'user not found' })))
+    .catch(next);
+};
+
+module.exports = {
+  sendAllUsers,
+  sendUserByUsername,
+  saveNewUser,
+  updateUserDetails,
+};
