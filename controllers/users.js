@@ -11,6 +11,7 @@ const sendAllUsers = (req, res, next) => {
 const sendUserByUsername = (req, res, next) => {
   const { username } = req.params;
   connection('users')
+    .select('username', 'avatar_url', 'name')
     .where('username', username)
     .then(([user]) => {
       if (user) return res.send({ user });
