@@ -1,5 +1,5 @@
 const connection = require('../db/connection');
-const { formatUsers } = require('../db/utils');
+const { formatUsers, reformatDate } = require('../db/utils');
 
 const sendAllUsers = (req, res, next) => {
   connection('users')
@@ -47,9 +47,38 @@ const updateUserDetails = (req, res, next) => {
     .catch(next);
 };
 
+const sendArticlesByUser = (req, res, next) => {
+  const { order, limit = 10, p = 1 } = req.query;
+  const validColumns = ['title', 'votes', 'created_at', 'topic'];
+  const sortBy = validColumns.includes(req.query.sort_by)
+    ? `articles.${req.query.sort_by}`
+    : 'created_at';
+  const offset = limit * (p - 1);
+  const { username } = req.params;
+  if (!username) return next();
+  return connection('articles')
+    .where('articles.username', '=', username)
+    .select(
+      'articles.username AS author',
+      'articles.title',
+      'articles.article_id',
+      'articles.votes',
+      'articles.created_at',
+      'topic',
+    )
+    .then((articles) => {
+      if (articles && articles.length) {
+        reformatDate(articles);
+        res.send({ articles });
+      } else next({ status: 404, msg: 'articles not found' });
+    })
+    .catch(next);
+};
+
 module.exports = {
   sendAllUsers,
   sendUserByUsername,
+  sendArticlesByUser,
   saveNewUser,
   updateUserDetails,
 };

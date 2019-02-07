@@ -4,6 +4,7 @@ const {
   sendUserByUsername,
   saveNewUser,
   updateUserDetails,
+  sendArticlesByUser
 } = require('../controllers/users');
 const { handle405 } = require('../errors');
 
@@ -19,6 +20,10 @@ usersRouter
   .route('/:username')
   .get(sendUserByUsername)
   .patch(updateUserDetails)
+  .all(handle405);
+usersRouter
+  .route('/:username/articles')
+  .get(sendArticlesByUser)
   .all(handle405);
 
 module.exports = usersRouter;

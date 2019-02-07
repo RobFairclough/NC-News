@@ -2,40 +2,39 @@ module.exports = [
   {
     username: 'tickle122',
     name: 'Tom Tickle',
-    avatar_url: 'https://www.spiritsurfers.net/monastery/wp-content/uploads/_41500270_mrtickle.jpg',
+    avatar_url:
+      'https://banner2.kisspng.com/20180604/vat/kisspng-mr-tickle-mr-men-mr-happy-children-s-literature-mr-men-5b14f627404687.4204839215281003912633.jpg',
     password: 'password',
   },
   {
     username: 'grumpy19',
     name: 'Paul Grump',
-    avatar_url: 'https://www.tumbit.com/profile-image/4/original/mr-grumpy.jpg',
+    avatar_url: 'http://assets.stickpng.com/thumbs/58afd77e0187e59a7d8a8f2c.png',
     password: 'password',
   },
   {
     username: 'happyamy2016',
     name: 'Amy Happy',
-    avatar_url:
-      'https://vignette1.wikia.nocookie.net/mrmen/images/7/7f/Mr_Happy.jpg/revision/latest?cb=20140102171729',
+    avatar_url: 'http://www.stickpng.com/assets/images/58afd7750187e59a7d8a8f2b.png',
     password: 'password',
   },
   {
     username: 'cooljmessy',
     name: 'Peter Messy',
-    avatar_url: 'https://i.imgur.com/WfX0Neu.jpg',
+    avatar_url: 'http://www.stickpng.com/assets/images/58afd7440187e59a7d8a8f26.png',
     password: 'password',
   },
   {
     username: 'weegembump',
     name: 'Gemma Bump',
-    avatar_url:
-      'https://www.upandrunning.co.uk/media/catalog/product/cache/1/image/650x/040ec09b1e35df139433887a97daa66f/m/r/mr-bump.jpg',
+    avatar_url: 'https://www.clipartmax.com/png/middle/104-1040857_mr-bump-mr-bump-mr-men.png',
     password: 'password',
   },
   {
     username: 'jessjelly',
     name: 'Jess Jelly',
     avatar_url:
-      'https://s-media-cache-ak0.pinimg.com/564x/39/62/ec/3962eca164e60cf46f979c1f57d4078b.jpg',
+      'https://vignette.wikia.nocookie.net/parody/images/9/93/Mr_Jelly2A.png/revision/latest?cb=20170601212633',
     password: 'password',
   },
 ];
