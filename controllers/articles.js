@@ -4,7 +4,9 @@ const { reformatDate } = require('../db/utils');
 const sendAllArticles = (req, res, next) => {
   const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
-  const sortBy = validColumns.includes(req.query.sort_by) ? `articles.${req.query.sort_by}` : 'created_at';
+  const sortBy = validColumns.includes(req.query.sort_by)
+    ? `articles.${req.query.sort_by}`
+    : 'created_at';
   const offset = limit * (p - 1);
   connection('articles')
     .select(
@@ -14,13 +16,15 @@ const sendAllArticles = (req, res, next) => {
       'articles.votes',
       'articles.created_at',
       'topic',
+      'users.avatar_url',
     )
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .fullOuterJoin('users', 'articles.username', 'users.username')
     .orderBy(sortBy, order === 'asc' ? order : 'desc')
     .offset(offset)
     .limit(limit)
     .count('comments.comment_id AS comment_count')
-    .groupBy('articles.article_id')
+    .groupBy('articles.article_id', 'users.avatar_url')
     .then((articles) => {
       reformatDate(articles);
       res.send({ articles });
