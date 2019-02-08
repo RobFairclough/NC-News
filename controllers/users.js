@@ -51,10 +51,6 @@ const updateUserDetails = (req, res, next) => {
 const sendArticlesByUser = (req, res, next) => {
   const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['title', 'votes', 'created_at', 'topic'];
-  const sortBy = validColumns.includes(req.query.sort_by)
-    ? `articles.${req.query.sort_by}`
-    : 'created_at';
-  const offset = limit * (p - 1);
   const { username } = req.params;
   if (!username) return next();
   return connection('articles')
@@ -65,8 +61,11 @@ const sendArticlesByUser = (req, res, next) => {
       'articles.article_id',
       'articles.votes',
       'articles.created_at',
-      'topic',
+      'articles.topic',
+      'users.avatar_url',
     )
+    .fullOuterJoin('users', 'articles.username', 'users.username')
+    .groupBy('articles.article_id', 'users.username')
     .then((articles) => {
       if (articles && articles.length) {
         reformatDate(articles);
