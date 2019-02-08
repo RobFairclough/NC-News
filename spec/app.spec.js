@@ -102,6 +102,7 @@ describe('/api', () => {
             'created_at',
             'comment_count',
             'topic',
+            'avatar_url',
           );
           expect(body.articles[0].comment_count).to.equal('2');
         }));
@@ -213,6 +214,7 @@ describe('/api', () => {
           'comment_count',
           'created_at',
           'topic',
+          'avatar_url',
         );
       }));
     it('GET request should allow for a ?sort_by query and ?order query and a ?limit defaulting to 10, allowing users to sort data by any of the columns - defaulting to date and descending respectively', () => request

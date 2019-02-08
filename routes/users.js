@@ -4,7 +4,7 @@ const {
   sendUserByUsername,
   saveNewUser,
   updateUserDetails,
-  sendArticlesByUser
+  sendArticlesByUser,
 } = require('../controllers/users');
 const { handle405 } = require('../errors');
 

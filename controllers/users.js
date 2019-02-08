@@ -49,8 +49,6 @@ const updateUserDetails = (req, res, next) => {
 };
 
 const sendArticlesByUser = (req, res, next) => {
-  const { order, limit = 10, p = 1 } = req.query;
-  const validColumns = ['title', 'votes', 'created_at', 'topic'];
   const { username } = req.params;
   if (!username) return next();
   return connection('articles')

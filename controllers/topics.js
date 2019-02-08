@@ -25,7 +25,7 @@ const sendArticlesByTopic = (req, res, next) => {
       'users.avatar_url',
     )
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
-    .fullOuterJoin('users', 'articles.username', 'articles.username')
+    .fullOuterJoin('users', 'articles.username', 'users.username')
     .count('comments.comment_id as comment_count')
     .groupBy('articles.article_id', 'users.username')
     .limit(limit)
