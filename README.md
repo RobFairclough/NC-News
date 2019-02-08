@@ -2,6 +2,9 @@
 
 NC Knews is an API built to serve the front-end Northcoders News Sprint. It serves up information on News topics, articles, comments and users.
 
+NC Knews is available as a live site at [this netlify link](https://nc-knews.netlify.com) and the repo is (this page) available [here](https://github.com/RobFairclough/NC-Knews).
+The back-end API is available live at [this heroku link](https://ncknewsrob.herokuapp.com/api) and the repo is available [here](https://github.com/robfairclough/NC-News).
+
 ## Using the API
 
 The NC Knews API is available on Heroku. [This link](https://ncknewsrob.herokuapp.com/api/) provides a JSON object describing all available endpoints. To get access to restricted endpoints you can send a POST request to the /login endpoint, with a valid username and password in this format
