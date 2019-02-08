@@ -72,6 +72,18 @@ const sendArticlesByUser = (req, res, next) => {
     })
     .catch(next);
 };
+const deleteUser = (req, res, next) => {
+  const { username } = req.params;
+  connection('users')
+    .where('username', username)
+    .del()
+    .then((response) => {
+      if (response === 0) next({ status: 404, msg: 'no users exist to delete with that username' });
+      else res.status(204).send({ msg: 'delete successful' });
+    })
+    // })
+    .catch(next);
+};
 
 module.exports = {
   sendAllUsers,
@@ -79,4 +91,5 @@ module.exports = {
   sendArticlesByUser,
   saveNewUser,
   updateUserDetails,
+  deleteUser,
 };

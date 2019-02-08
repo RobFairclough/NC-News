@@ -5,7 +5,10 @@ exports.up = function (knex, Promise) {
       .primary()
       .unique();
     table.string('username').notNullable();
-    table.foreign('username').references('users.username');
+    table
+      .foreign('username')
+      .references('users.username')
+      .onDelete('CASCADE');
     table.integer('article_id').notNullable();
     table
       .foreign('article_id')

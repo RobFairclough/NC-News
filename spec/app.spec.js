@@ -458,7 +458,7 @@ describe('/api', () => {
         }));
       it('GET request should respond status 404 if no users exist by that usename', () => request.get('/api/users/robfairclough').expect(404));
       it('Invalid request methods should return status 405', () => {
-        const invalidMethods = ['put', 'delete'];
+        const invalidMethods = ['put'];
         test405(invalidMethods, '/api/users/butter_bridge').then(([response]) => expect(response.statusCode).to.equal(405));
       });
       it('PATCH request should respond status 200 with an updated user object with a successful request', () => {

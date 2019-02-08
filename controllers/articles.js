@@ -77,10 +77,6 @@ const sendArticleVotes = (req, res, next) => {
 
 const deleteArticle = (req, res, next) => {
   const { article_id } = req.params;
-  // connection('comments')
-  //   .where('article_id', article_id)
-  //   .del()
-  //   .then(() => {
   connection('articles')
     .where('article_id', article_id)
     .del()

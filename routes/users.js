@@ -5,11 +5,10 @@ const {
   saveNewUser,
   updateUserDetails,
   sendArticlesByUser,
+  deleteUser,
 } = require('../controllers/users');
 const { handle405 } = require('../errors');
 
-usersRouter.get('/', sendAllUsers);
-usersRouter.get('/:username', sendUserByUsername);
 usersRouter
   .route('/')
   .get(sendAllUsers)
@@ -19,6 +18,7 @@ usersRouter
 usersRouter
   .route('/:username')
   .get(sendUserByUsername)
+  .delete(deleteUser)
   .patch(updateUserDetails)
   .all(handle405);
 usersRouter
