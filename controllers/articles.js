@@ -24,7 +24,7 @@ const sendAllArticles = (req, res, next) => {
     .offset(offset)
     .limit(limit)
     .count('comments.comment_id AS comment_count')
-    .groupBy('articles.article_id', 'users.username')
+    .groupBy('articles.article_id', 'users.avatar_url')
     .then((articles) => {
       reformatDate(articles);
       res.send({ articles });
