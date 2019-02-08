@@ -19,7 +19,7 @@ const sendAllArticles = (req, res, next) => {
       'users.avatar_url',
     )
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-    .fullOuterJoin('users', 'articles.username', 'users.username')
+    .rightJoin('users', 'articles.username', 'users.username')
     .orderBy(sortBy, order === 'asc' ? order : 'desc')
     .offset(offset)
     .limit(limit)
