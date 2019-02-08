@@ -22,10 +22,12 @@ const sendArticlesByTopic = (req, res, next) => {
       'articles.votes',
       'articles.created_at',
       'articles.topic',
+      'users.avatar_url',
     )
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
+    .fullOuterJoin('users', 'articles.username', 'articles.username')
     .count('comments.comment_id as comment_count')
-    .groupBy('articles.article_id')
+    .groupBy('articles.article_id', 'users.username')
     .limit(limit)
     .offset(offset)
     .orderBy(sortBy, order === 'asc' ? order : 'desc')
