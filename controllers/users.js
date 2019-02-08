@@ -62,7 +62,7 @@ const sendArticlesByUser = (req, res, next) => {
       'articles.topic',
       'users.avatar_url',
     )
-    .rightJoin('users', 'articles.username', 'users.avatar_url')
+    .rightJoin('users', 'articles.username', 'users.username')
     .groupBy('articles.article_id', 'users.username')
     .then((articles) => {
       if (articles && articles.length) {
