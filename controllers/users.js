@@ -64,6 +64,7 @@ const sendArticlesByUser = (req, res, next) => {
     )
     .rightJoin('users', 'articles.username', 'users.username')
     .groupBy('articles.article_id', 'users.username')
+    .whereNotNull('title')
     .then((articles) => {
       if (articles && articles.length) {
         reformatDate(articles);

@@ -32,6 +32,7 @@ const sendArticlesByTopic = (req, res, next) => {
     .offset(offset)
     .orderBy(sortBy, order === 'asc' ? order : 'desc')
     .where(req.params)
+    .whereNotNull('title')
     .then((articles) => {
       // postgres/knex returns dates as js Date objects, this puts back to the intended format
       reformatDate(articles);
