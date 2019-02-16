@@ -1,4 +1,4 @@
-const { DB_URL } = process.env;
+const DB_URL: string = process.env.DB_URL;
 
 module.exports = {
   development: {
@@ -7,10 +7,10 @@ module.exports = {
       database: 'nc_knews_dev',
     },
     migrations: {
-      directory: './migrations',
+      directory: './src/migrations',
     },
     seeds: {
-      directory: './seeds',
+      directory: './src/seeds',
     },
   },
 
@@ -20,20 +20,20 @@ module.exports = {
       database: 'nc_knews_test',
     },
     migrations: {
-      directory: './migrations',
+      directory: './src/migrations',
     },
     seeds: {
-      directory: './seeds',
+      directory: './src/seeds',
     },
   },
   production: {
     client: 'pg',
     connection: `${DB_URL}?ssl=true`,
     migrations: {
-      directory: './migrations',
+      directory: './src/migrations',
 
       seeds: {
-        directory: './seeds',
+        directory: './src/seeds',
       },
     },
   },

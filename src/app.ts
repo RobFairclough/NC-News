@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from 'express';
+
 const app = require('express')();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -12,17 +14,24 @@ const connection = require('./db/connection');
 const JWT_SECRET = require('./passconfig');
 const { authorise } = require('./controllers/secure');
 
+interface User {
+  username: string;
+  name: string;
+  password: string;
+  avatar_url: string;
+}
+
 app.use(cors());
 app.use(bodyParser);
 app.use('/api', apiRouter);
-app.get('/', (req, res) => res.send('homepage'));
+app.get('/', (req: Request, res: Response) => res.send('homepage'));
 // auth bonus
-app.post('/login', (req, res, next) => {
+app.post('/login', (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
   if (!username || !password) return next({ status: 401, msg: 'invalid login' });
   return connection('users')
     .where('username', username)
-    .then(([user]) => {
+    .then(([user]: any) => {
       if (user) {
         return Promise.all([bcrypt.compare(password, user.password), user]).then(
           ([passwordOk, authorisedUser]) => {
@@ -50,5 +59,5 @@ app.use(handle401);
 app.use(handle422);
 app.use(handle404);
 app.use(handle500);
-// module.exports = app;
-export default app;
+module.exports = app;
+// export default app;
