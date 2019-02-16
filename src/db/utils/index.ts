@@ -54,7 +54,7 @@ module.exports = {
 
   setArticleIds(articles: Article[], object: any) {
     return articles.map((article: Article) => Object.keys(article).reduce(
-      (obj: any, key: any) => {
+      (obj: any, key: string) => {
         if (key !== 'belongs_to') obj[key] = article[key];
         return obj;
       },
