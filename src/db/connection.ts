@@ -15,5 +15,5 @@ const dbConfig = ENV === 'production'
   }
   : require('../knexfile')[ENV];
 
-const connection = knex(dbConfig);
-module.exports = connection;
+// const knexConnection = knex(dbConfig);
+module.exports = knex(dbConfig);

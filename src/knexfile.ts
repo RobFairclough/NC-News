@@ -1,4 +1,4 @@
-const DB_URL: string = process.env.DB_URL;
+const { DB_URL } = process.env;
 
 module.exports = {
   development: {

@@ -17,8 +17,8 @@ const { authorise } = require('./controllers/secure');
 interface User {
   username: string;
   name: string;
-  password: string;
-  avatar_url: string;
+  password?: string;
+  avatar_url?: string;
 }
 
 app.use(cors());
@@ -31,7 +31,8 @@ app.post('/login', (req: Request, res: Response, next: NextFunction) => {
   if (!username || !password) return next({ status: 401, msg: 'invalid login' });
   return connection('users')
     .where('username', username)
-    .then(([user]: any) => {
+    .then((users: User[]) => {
+      const [user] = users;
       if (user) {
         return Promise.all([bcrypt.compare(password, user.password), user]).then(
           ([passwordOk, authorisedUser]) => {
@@ -60,4 +61,3 @@ app.use(handle422);
 app.use(handle404);
 app.use(handle500);
 module.exports = app;
-// export default app;

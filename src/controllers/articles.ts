@@ -1,7 +1,19 @@
+import { Request, Response, NextFunction } from 'express';
+
 const connection = require('../db/connection');
 const { reformatDate } = require('../db/utils');
 
-const sendAllArticles = (req, res, next) => {
+interface Article {
+  username?: string;
+  author?: string;
+  article_id?: number;
+  votes?: number;
+  created_at?: string;
+  topic?: string;
+  avatar_url?: string;
+}
+
+const sendAllArticles = (req: Request, res: Response, next: NextFunction) => {
   const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
   const sortBy = validColumns.includes(req.query.sort_by)
@@ -26,14 +38,14 @@ const sendAllArticles = (req, res, next) => {
     .count('comments.comment_id AS comment_count')
     .groupBy('articles.article_id', 'articles.username', 'users.avatar_url')
     .whereNotNull('title')
-    .then((articles) => {
+    .then((articles: Article[]) => {
       reformatDate(articles);
       res.send({ articles });
     })
     .catch(next);
 };
 
-const sendArticleById = (req, res, next) => {
+const sendArticleById = (req: Request, res: Response, next: NextFunction) => {
   const { article_id } = req.params;
   connection('articles')
     .select(
@@ -49,7 +61,8 @@ const sendArticleById = (req, res, next) => {
     .count('comment_id AS comment_count')
     .groupBy('articles.article_id')
     .where('articles.article_id', article_id)
-    .then(([article]) => {
+    .then((articles: Article[]) => {
+      const [article] = articles;
       if (article) {
         reformatDate(article);
         res.send({ article });
@@ -58,7 +71,7 @@ const sendArticleById = (req, res, next) => {
     .catch(next);
 };
 
-const sendArticleVotes = (req, res, next) => {
+const sendArticleVotes = (req: Request, res: Response, next: NextFunction) => {
   const { article_id } = req.params;
   const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
   if (Number.isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
@@ -66,7 +79,8 @@ const sendArticleVotes = (req, res, next) => {
     .where('article_id', '=', article_id)
     .increment('votes', inc_votes)
     .returning('*')
-    .then(([article]) => {
+    .then((articles: Article[]) => {
+      const [article] = articles;
       if (article) {
         reformatDate(article);
         return res.send({ article });
@@ -76,12 +90,12 @@ const sendArticleVotes = (req, res, next) => {
     .catch(next);
 };
 
-const deleteArticle = (req, res, next) => {
+const deleteArticle = (req: Request, res: Response, next: NextFunction) => {
   const { article_id } = req.params;
   connection('articles')
     .where('article_id', article_id)
     .del()
-    .then((response) => {
+    .then((response: any) => {
       if (response === 0) next({ status: 404, msg: 'no articles exist to delete with that id' });
       else res.status(204).send({ msg: 'delete successful' });
     })
