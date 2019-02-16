@@ -50,4 +50,5 @@ app.use(handle401);
 app.use(handle422);
 app.use(handle404);
 app.use(handle500);
-module.exports = app;
+// module.exports = app;
+export default app;
