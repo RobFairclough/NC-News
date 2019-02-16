@@ -391,7 +391,7 @@ describe('/api', () => {
           it('DELETE request return status code 404 if comment_id does not exist', () => request.delete('/api/articles/1/comments/1234').expect(404));
           it('Invalid request methods should return status 405', () => {
             const invalidMethods = ['get', 'put', 'post'];
-            test405(invalidMethods, '/api/articles/1/comments/2').then(([response]) => expect(response.statusCode).to.equal(405));
+            test405(invalidMethods, '/api/articles/1/comments/6').then(([response]) => expect(response.statusCode).to.equal(405));
           });
         });
       });
@@ -475,7 +475,8 @@ describe('/api', () => {
             expect(body.user.name).to.equal(updated.name);
           });
       });
-      it('PATCH request should not respond status 404 if no user exists with that username', () => request.patch('/api/users/imaginary')
+      it('PATCH request should not respond status 404 if no user exists with that username', () => request
+        .patch('/api/users/imaginary')
         .send({ name: 'bloo' })
         .expect(404));
     });

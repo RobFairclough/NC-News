@@ -11,6 +11,8 @@ interface Article {
   created_at?: string;
   topic?: string;
   avatar_url?: string;
+  body?: string;
+  title?: string;
 }
 
 const sendAllArticles = (req: Request, res: Response, next: NextFunction) => {

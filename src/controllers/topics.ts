@@ -1,14 +1,31 @@
+import { Request, Response, NextFunction } from 'express';
+
 const connection = require('../db/connection');
 const { reformatDate } = require('../db/utils');
 
-const sendAllTopics = (req, res, next) => {
+interface Topic {
+  slug: string;
+  description: string;
+}
+
+interface Article {
+  username?: string;
+  author?: string;
+  article_id: number;
+  votes: number;
+  created_at: string;
+  topic: string;
+  avatar_url?: string;
+}
+
+const sendAllTopics = (req: Request, res: Response, next: NextFunction) => {
   connection('topics')
     .select()
-    .then(topics => res.send({ topics }))
+    .then((topics: Topic[]) => res.send({ topics }))
     .catch(next);
 };
 
-const sendArticlesByTopic = (req, res, next) => {
+const sendArticlesByTopic = (req: Request, res: Response, next: NextFunction) => {
   const { topic } = req.params;
   const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
@@ -33,8 +50,7 @@ const sendArticlesByTopic = (req, res, next) => {
     .orderBy(sortBy, order === 'asc' ? order : 'desc')
     .where(req.params)
     .whereNotNull('title')
-    .then((articles) => {
-      // postgres/knex returns dates as js Date objects, this puts back to the intended format
+    .then((articles: Article[]) => {
       reformatDate(articles);
       return articles.length
         ? res.status(200).send({ topic, articles })
@@ -43,18 +59,19 @@ const sendArticlesByTopic = (req, res, next) => {
     .catch(next);
 };
 
-const saveNewTopic = (req, res, next) => {
+const saveNewTopic = (req: Request, res: Response, next: NextFunction) => {
   const { slug, description } = req.body;
   connection('topics')
     .insert({ slug, description })
     .returning('*')
-    .then(([topic]) => {
+    .then((topics: Topic[]) => {
+      const [topic] = topics;
       res.status(201).send({ topic });
     })
     .catch(next);
 };
 
-const saveNewArticleInTopic = (req, res, next) => {
+const saveNewArticleInTopic = (req: Request, res: Response, next: NextFunction) => {
   const { topic } = req.params;
   const { title, username, body } = req.body;
   connection('articles')
@@ -65,7 +82,8 @@ const saveNewArticleInTopic = (req, res, next) => {
       body,
     })
     .returning('*')
-    .then(([article]) => {
+    .then((articles: Article[]) => {
+      const [article] = articles;
       res.status(201).send({ article });
     })
     .catch(next);
