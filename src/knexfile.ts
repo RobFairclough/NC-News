@@ -7,10 +7,10 @@ module.exports = {
       database: 'nc_knews_dev',
     },
     migrations: {
-      directory: './src/migrations',
+      directory: './built/migrations',
     },
     seeds: {
-      directory: './src/seeds',
+      directory: './built/seeds',
     },
   },
 
@@ -20,20 +20,20 @@ module.exports = {
       database: 'nc_knews_test',
     },
     migrations: {
-      directory: './src/migrations',
+      directory: './built/migrations',
     },
     seeds: {
-      directory: './src/seeds',
+      directory: './built/seeds',
     },
   },
   production: {
     client: 'pg',
     connection: `${DB_URL}?ssl=true`,
     migrations: {
-      directory: './src/migrations',
+      directory: './built/migrations',
 
       seeds: {
-        directory: './src/seeds',
+        directory: './built/seeds',
       },
     },
   },

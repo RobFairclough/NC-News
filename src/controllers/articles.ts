@@ -6,13 +6,13 @@ const { reformatDate } = require('../db/utils');
 interface Article {
   username?: string;
   author?: string;
-  article_id?: number;
-  votes?: number;
-  created_at?: string;
-  topic?: string;
+  article_id: number;
+  votes: number;
+  created_at: string;
+  topic: string;
   avatar_url?: string;
   body?: string;
-  title?: string;
+  title: string;
 }
 
 const sendAllArticles = (req: Request, res: Response, next: NextFunction) => {

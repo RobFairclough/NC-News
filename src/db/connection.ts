@@ -6,10 +6,10 @@ const dbConfig = ENV === 'production'
     client: 'pg',
     connection: `${DATABASE_URL}?ssl=true`,
     migrations: {
-      directory: './src/migrations',
+      directory: './built/migrations',
 
       seeds: {
-        directory: './src/seeds',
+        directory: './built/seeds',
       },
     },
   }
