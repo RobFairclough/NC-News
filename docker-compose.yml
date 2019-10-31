@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  server:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DB_PASSWORD: postgres
+      DB_USER: robfairclough
+      DB_NAME: nc_knews_dev
+      DB_HOST: db
+      DB_PORT: 5432
+  db:
+    image: postgres:alpine
+    volumes: 
+      - db-data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: robfairclough
+      POSTGRES_DB: nc_knews_dev
+    networks: 
+      - webnet
+
+
+volumes:
+  db-data:
+
+networks:
+  webnet:

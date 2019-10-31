@@ -1,6 +1,6 @@
 const app = require('express')();
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs');
 const bodyParser = require('body-parser').json();
 const cors = require('cors');
 const apiRouter = require('./routes/api');
