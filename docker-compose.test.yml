@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  server: 
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+      - db
+    environment:
+      DB_PASSWORD: postgres
+      DB_USER: robfairclough
+      DB_NAME: nc_knews_test
+      DB_HOST: db
+      DB_PORT: 5432
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    networks: 
+      - testnet
+    command: ["npm", "test"]
+    
+  db:
+    image: postgres:alpine
+    volumes: 
+      - db-test
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: robfairclough
+      POSTGRES_DB: nc_knews_test
+    networks: 
+      - testnet
+
+
+volumes:
+  db-test:
+
+networks:
+  testnet:

@@ -8,4 +8,4 @@ RUN npm ci
 
 COPY . .
 
-CMD ["sh", "-c", "npm run migrate:latest && npm start"]
+CMD ["npm", "test"]
