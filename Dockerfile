@@ -12,4 +12,5 @@ COPY . .
 # CMD ["sh", "-c", "npm run migrate:latest && npm run seed && npm start"]
 
 # CMD ["sh", "-c", "npm run migrate:latest && npm start"]
+# note, can get in with docker-compose run server sh
 CMD ["npm", "start"]
