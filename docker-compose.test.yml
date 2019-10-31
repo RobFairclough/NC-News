@@ -4,10 +4,12 @@ services:
   server: 
     build: 
       context: .
+      # using different dockerfile for different start command
       dockerfile: Dockerfile.test
     depends_on:
       - db
     environment:
+      # test env
       DB_PASSWORD: postgres
       DB_USER: robfairclough
       DB_NAME: nc_knews_test
@@ -18,7 +20,7 @@ services:
       - "8080:8080"
     networks: 
       - testnet
-    command: ["npm", "test"]
+    command: ["npm", "run", "test:docker"]
     
   db:
     image: postgres:alpine
