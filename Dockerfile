@@ -8,4 +8,8 @@ RUN npm ci
 
 COPY . .
 
-CMD ["sh", "-c", "npm run migrate:latest && npm start"]
+# below command runs migrations, seeds and starts. For first run
+# CMD ["sh", "-c", "npm run migrate:latest && npm run seed && npm start"]
+
+# CMD ["sh", "-c", "npm run migrate:latest && npm start"]
+CMD ["npm", "start"]
