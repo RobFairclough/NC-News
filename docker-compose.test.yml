@@ -25,7 +25,7 @@ services:
   db:
     image: postgres:alpine
     volumes: 
-      - db-test
+      - db-test:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: robfairclough
