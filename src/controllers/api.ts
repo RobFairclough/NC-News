@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Handler } from 'express';
 
-const serveJSON = (req: Request, res: Response, next: NextFunction) => {
+const serveJSON: Handler = (req, res) => {
   res.sendFile(`${process.cwd()}/data/endpoints.JSON`);
 };
 

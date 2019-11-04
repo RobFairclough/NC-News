@@ -1,15 +1,17 @@
-import { Request, Response, NextFunction } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { Handler } from 'express';
 
-const jwt = require('jsonwebtoken');
+
 const JWT_SECRET = require('../passconfig');
 
-const authorise = (req: Request, res: Response, next: NextFunction) => {
+const authorise: Handler = (req, res, next) => {
   // return next();
   const { authorization } = req.headers;
   if (!authorization) next({ status: 401, msg: 'Unauthorised' });
   else {
     const token = authorization.split(' ')[1];
-    jwt.verify(token, JWT_SECRET, (err: any) => {
+    
+    jwt.verify(token, JWT_SECRET, (err: jwt.VerifyErrors): void => {
       if (err) {
         next({ status: 401, msg: 'Unauthorised' });
       } else {

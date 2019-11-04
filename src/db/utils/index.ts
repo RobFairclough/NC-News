@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 
-interface dataWithTimestamp {
+type IDLookupObject<T> = {
+  [key: string]: T;
+}
+interface DataWithTimestamp {
   created_at: string;
 }
 interface Article {
@@ -24,8 +27,8 @@ interface User {
 }
 
 module.exports = {
-  changeTimestampToDate(array: dataWithTimestamp[]) {
-    return array.map((element: dataWithTimestamp) => {
+  changeTimestampToDate(array: DataWithTimestamp[]) {
+    return array.map((element: DataWithTimestamp) => {
       const timestamp = new Date(element.created_at);
       const day = timestamp.getDate();
       const month = timestamp.getMonth() + 1;
@@ -36,23 +39,23 @@ module.exports = {
     });
   },
 
-  renameColumn(array: any[], before: string, after: string) {
-    const mapFunc = (beforeCol: string, afterCol: string, { [beforeCol]: old, ...others }) => ({
+  renameColumn(array: object[], before: string, after: string): object[] {
+    const mapFunc = (beforeCol: string, afterCol: string, { [beforeCol]: old, ...others }): object => ({
       [afterCol]: old,
       ...others,
     });
     return array.map((obj: object) => mapFunc(before, after, obj));
   },
 
-  getArticleIds(articles: Article[]) {
-    const obj: any = {};
+  getArticleIds(articles: Article[]): object {
+    const obj: IDLookupObject<number> = {};
     articles.forEach(({ title, article_id }) => {
       obj[title] = article_id;
     });
     return obj;
   },
 
-  setArticleIds(articles: Article[], object: any) {
+  setArticleIds(articles: Article[], object: Article): Article[] {
     return articles.map((article: Article) => Object.keys(article).reduce(
       (obj: any, key: string) => {
         if (key !== 'belongs_to') obj[key] = article[key];
@@ -61,7 +64,8 @@ module.exports = {
       { article_id: object[article.belongs_to] },
     ));
   },
-  reformatDate(arr: dataWithTimestamp[] | dataWithTimestamp) {
+  // bad bad mutating
+  reformatDate(arr: DataWithTimestamp[] | DataWithTimestamp): void {
     if (Array.isArray(arr)) {
       arr.forEach((obj) => {
         obj.created_at = JSON.stringify(obj.created_at).slice(1, 11);
@@ -69,7 +73,8 @@ module.exports = {
     } else arr.created_at = JSON.stringify(arr.created_at).slice(1, 11);
   },
 
-  formatUsers(rawUsers: User[] | User) {
+  // bad bad bad
+  formatUsers(rawUsers: User[] | User): User | User[] {
     if (Array.isArray(rawUsers)) {
       return rawUsers.map(user => ({
         ...user,

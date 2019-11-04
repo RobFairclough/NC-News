@@ -1,6 +1,9 @@
+import Knex = require("knex");
+
+
 const ENV = process.env.NODE_ENV || 'development';
 const { DATABASE_URL } = process.env;
-const knex = require('knex');
+
 const dbConfig = ENV === 'production'
   ? {
     client: 'pg',
@@ -13,7 +16,9 @@ const dbConfig = ENV === 'production'
       },
     },
   }
-  : require('../knexfile')[ENV];
+  : require('../knexfile')[ENV]; 
 
-// const knexConnection = knex(dbConfig);
-module.exports = knex(dbConfig);
+  const instance: Knex = Knex(dbConfig as Knex.Config)
+// const KnexConnection = Knex(dbConfig);
+module.exports = instance;
+export default instance;

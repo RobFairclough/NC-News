@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Handler } from 'express';
 
 const connection = require('../db/connection');
 const { reformatDate } = require('../db/utils');
@@ -13,7 +13,7 @@ interface Comment {
   body: string;
 }
 
-const sendCommentsByArticleId = (req: Request, res: Response, next: NextFunction) => {
+const sendCommentsByArticleId: Handler = (req, res, next) => {
   const { article_id } = req.params;
   const {
     limit = 10, sort_by = 'created_at', p = 1, order = 'desc',
@@ -33,7 +33,7 @@ const sendCommentsByArticleId = (req: Request, res: Response, next: NextFunction
     .catch(next);
 };
 
-const saveNewComment = (req: Request, res: Response, next: NextFunction) => {
+const saveNewComment: Handler = (req, res, next) => {
   const { username, body } = req.body;
   const { article_id } = req.params;
   const obj = { username, body, article_id };
@@ -48,7 +48,7 @@ const saveNewComment = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-const sendCommentVotes = (req: Request, res: Response, next: NextFunction) => {
+const sendCommentVotes: Handler = (req, res, next) => {
   const { comment_id, article_id } = req.params;
   const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
   if (Number.isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
@@ -68,7 +68,7 @@ const sendCommentVotes = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-const deleteComment = (req: Request, res: Response, next: NextFunction) => {
+const deleteComment: Handler = (req, res, next) => {
   const { comment_id, article_id } = req.params;
   connection('comments')
     .where('comment_id', comment_id)

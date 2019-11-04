@@ -4,7 +4,7 @@
   "description": "## Northcoders News API",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon listen.js",
+    "dev": "nodemon built/listen.js",
     "test": "tsc && psql -f src/db/test_setup.sql && mocha built/spec",
     "lint": "eslint ./ --fix",
     "pre-commit": "npm t",
@@ -14,7 +14,7 @@
     "migrate:rollback": "knex migrate:rollback",
     "seed:run": "knex seed:run",
     "seed": "npm run migrate:rollback && npm run migrate:latest && npm run seed:run",
-    "start": "node listen.js",
+    "start": "node built/listen.js",
     "seed:prod": "DB_URL=$(heroku config:get DATABASE_URL) npm run migrate:rollback:prod && npm run migrate:latest:prod && DB_URL=$(heroku config:get DATABASE_URL) knex seed:run --env production",
     "migrate:latest:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:latest --env production",
     "migrate:rollback:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:rollback --env production"
@@ -33,16 +33,19 @@
   "dependencies": {
     "@types/express": "^4.16.1",
     "@types/node": "^11.9.4",
-    "bcrypt": "^3.0.3",
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
-    "knex": "^0.15.2",
+    "knex": "^0.20.1",
     "mocha": "^5.2.0",
     "pg": "^7.8.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.3.5",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
     "chai": "^4.2.0",
     "eslint": "^5.12.0",
     "eslint-config-airbnb": "^17.1.0",
@@ -54,6 +57,6 @@
     "nodemon": "^1.18.9",
     "superagent-defaults": "^0.1.14",
     "supertest": "^3.3.0",
-    "typescript": "^3.3.3"
+    "typescript": "^3.6.4"
   }
 }

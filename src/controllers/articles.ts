@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Handler } from 'express';
 
-const connection = require('../db/connection');
+import connection from '../db/connection';
+
 const { reformatDate } = require('../db/utils');
 
 interface Article {
@@ -15,7 +16,7 @@ interface Article {
   title: string;
 }
 
-const sendAllArticles = (req: Request, res: Response, next: NextFunction) => {
+const sendAllArticles: Handler = (req, res, next) => {
   const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
   const sortBy = validColumns.includes(req.query.sort_by)
@@ -47,7 +48,7 @@ const sendAllArticles = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-const sendArticleById = (req: Request, res: Response, next: NextFunction) => {
+const sendArticleById: Handler = (req, res, next) => {
   const { article_id } = req.params;
   connection('articles')
     .select(
@@ -73,7 +74,7 @@ const sendArticleById = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-const sendArticleVotes = (req: Request, res: Response, next: NextFunction) => {
+const sendArticleVotes: Handler = (req, res, next) => {
   const { article_id } = req.params;
   const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
   if (Number.isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
@@ -92,12 +93,12 @@ const sendArticleVotes = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-const deleteArticle = (req: Request, res: Response, next: NextFunction) => {
+const deleteArticle: Handler = (req, res, next) => {
   const { article_id } = req.params;
   connection('articles')
     .where('article_id', article_id)
     .del()
-    .then((response: any) => {
+    .then((response: number) => {
       if (response === 0) next({ status: 404, msg: 'no articles exist to delete with that id' });
       else res.status(204).send({ msg: 'delete successful' });
     })
