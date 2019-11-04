@@ -1,4 +1,5 @@
-const articlesRouter = require('express').Router();
+import express from 'express';
+
 const {
   sendAllArticles,
   sendArticleById,
@@ -13,6 +14,9 @@ const {
 } = require('../controllers/comments');
 const { handle405 } = require('../errors');
 const { authorise } = require('../controllers/secure');
+
+
+const articlesRouter = express.Router();
 
 articlesRouter
   .route('/')
@@ -41,3 +45,4 @@ articlesRouter
   .all(handle405);
 
 module.exports = articlesRouter;
+export default articlesRouter;

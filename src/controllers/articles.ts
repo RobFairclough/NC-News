@@ -4,17 +4,6 @@ import connection from '../db/connection';
 
 const { reformatDate } = require('../db/utils');
 
-interface Article {
-  username?: string;
-  author?: string;
-  article_id: number;
-  votes: number;
-  created_at: string;
-  topic: string;
-  avatar_url?: string;
-  body?: string;
-  title: string;
-}
 
 const sendAllArticles: Handler = (req, res, next) => {
   const { order, limit = 10, p = 1 } = req.query;

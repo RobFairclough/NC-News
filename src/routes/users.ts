@@ -1,4 +1,5 @@
-const usersRouter = require('express').Router();
+import express from 'express';
+
 const {
   sendAllUsers,
   sendUserByUsername,
@@ -8,6 +9,8 @@ const {
   deleteUser,
 } = require('../controllers/users');
 const { handle405 } = require('../errors');
+
+const usersRouter = express.Router();
 
 usersRouter
   .route('/')
@@ -27,3 +30,4 @@ usersRouter
   .all(handle405);
 
 module.exports = usersRouter;
+export default usersRouter;

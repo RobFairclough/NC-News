@@ -1,4 +1,5 @@
-const topicsRouter = require('express').Router();
+import express from 'express';
+
 const {
   sendAllTopics,
   saveNewTopic,
@@ -7,6 +8,8 @@ const {
 } = require('../controllers/topics');
 const { authorise } = require('../controllers/secure');
 const { handle405 } = require('../errors');
+
+const topicsRouter = express.Router();
 
 topicsRouter
   .route('/')
@@ -23,3 +26,4 @@ topicsRouter
   .all(handle405);
 
 module.exports = topicsRouter;
+export default topicsRouter;

@@ -23,6 +23,7 @@ module.exports = {
         "arrow-body-style": ['warn'],
         "no-param-reassign": 0,
         "prefer-promise-reject-errors": 0,
+        "import/prefer-default-export": 0
     },
     "settings" : {
         "import/resolver": {

@@ -4,7 +4,7 @@ import { Handler } from 'express';
 
 const JWT_SECRET = require('../passconfig');
 
-const authorise: Handler = (req, res, next) => {
+export const authorise: Handler = (req, res, next) => {
   // return next();
   const { authorization } = req.headers;
   if (!authorization) next({ status: 401, msg: 'Unauthorised' });

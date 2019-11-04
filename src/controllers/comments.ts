@@ -3,16 +3,6 @@ import { Handler } from 'express';
 const connection = require('../db/connection');
 const { reformatDate } = require('../db/utils');
 
-interface Comment {
-  article_id: number;
-  comment_id: number;
-  votes: number;
-  created_at: string;
-  username?: string;
-  author?: string;
-  body: string;
-}
-
 const sendCommentsByArticleId: Handler = (req, res, next) => {
   const { article_id } = req.params;
   const {
@@ -74,7 +64,7 @@ const deleteComment: Handler = (req, res, next) => {
     .where('comment_id', comment_id)
     .andWhere('article_id', article_id)
     .del()
-    .then((response: any) => {
+    .then((response: number) => {
       if (response === 0) return Promise.reject({ status: 404, msg: 'comment not found' });
       return res.status(204).send({ msg: 'comment deleted' });
     })

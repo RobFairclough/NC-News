@@ -14,12 +14,6 @@ const connection = require('./db/connection');
 const JWT_SECRET = require('./passconfig');
 const { authorise } = require('./controllers/secure');
 
-interface User {
-  username: string;
-  name: string;
-  password?: string;
-  avatar_url?: string;
-}
 
 app.use(cors());
 app.use(bodyParser);

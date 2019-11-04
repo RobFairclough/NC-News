@@ -1,31 +1,17 @@
-import { Request, Response, NextFunction } from 'express';
+import { Handler } from 'express';
 
 const connection = require('../db/connection');
 const { reformatDate } = require('../db/utils');
 
-interface Topic {
-  slug: string;
-  description: string;
-}
 
-interface Article {
-  username?: string;
-  author?: string;
-  article_id: number;
-  votes: number;
-  created_at: string;
-  topic: string;
-  avatar_url?: string;
-}
-
-const sendAllTopics = (req: Request, res: Response, next: NextFunction) => {
+const sendAllTopics: Handler = (req, res, next) => {
   connection('topics')
     .select()
     .then((topics: Topic[]) => res.send({ topics }))
     .catch(next);
 };
 
-const sendArticlesByTopic = (req: Request, res: Response, next: NextFunction) => {
+const sendArticlesByTopic: Handler = (req, res, next) => {
   const { topic } = req.params;
   const { order, limit = 10, p = 1 } = req.query;
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
@@ -59,7 +45,7 @@ const sendArticlesByTopic = (req: Request, res: Response, next: NextFunction) =>
     .catch(next);
 };
 
-const saveNewTopic = (req: Request, res: Response, next: NextFunction) => {
+const saveNewTopic: Handler = (req, res, next) => {
   const { slug, description } = req.body;
   connection('topics')
     .insert({ slug, description })
@@ -71,7 +57,7 @@ const saveNewTopic = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-const saveNewArticleInTopic = (req: Request, res: Response, next: NextFunction) => {
+const saveNewArticleInTopic: Handler = (req, res, next) => {
   const { topic } = req.params;
   const { title, username, body } = req.body;
   connection('articles')

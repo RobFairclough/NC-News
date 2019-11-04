@@ -5,29 +5,13 @@ type IDLookupObject<T> = {
 }
 interface DataWithTimestamp {
   created_at: string;
-}
-interface Article {
-  username?: string;
-  author?: string;
-  article_id: number;
-  belongs_to?: string;
-  votes: number;
-  created_at: string;
-  topic: string;
-  avatar_url?: string;
-  body?: string;
-  title: string;
-  [index: string]: string | number;
-}
-interface User {
-  username: string;
-  name: string;
-  password?: string;
-  avatar_url?: string;
+  [key: string]: any;
 }
 
+
+
 module.exports = {
-  changeTimestampToDate(array: DataWithTimestamp[]) {
+  changeTimestampToDate(array: DataWithTimestamp[]): DataWithTimestamp[] {
     return array.map((element: DataWithTimestamp) => {
       const timestamp = new Date(element.created_at);
       const day = timestamp.getDate();
@@ -55,7 +39,7 @@ module.exports = {
     return obj;
   },
 
-  setArticleIds(articles: Article[], object: Article): Article[] {
+  setArticleIds(articles: Article[], object: object): Article[] {
     return articles.map((article: Article) => Object.keys(article).reduce(
       (obj: any, key: string) => {
         if (key !== 'belongs_to') obj[key] = article[key];
