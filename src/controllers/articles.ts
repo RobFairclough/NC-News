@@ -12,6 +12,7 @@ const sendAllArticles: Handler = (req, res, next) => {
     ? `articles.${req.query.sort_by}`
     : 'created_at';
   const offset = limit * (p - 1);
+  
   connection('articles')
     .select(
       'articles.username AS author',

@@ -2,9 +2,10 @@ import * as jwt from 'jsonwebtoken';
 import { Handler } from 'express';
 
 
-const JWT_SECRET = require('../passconfig');
+import { JWT_SECRET } from '../passconfig';
 
 export const authorise: Handler = (req, res, next) => {
+  // uncomment to disable authorisation requirements
   // return next();
   const { authorization } = req.headers;
   if (!authorization) next({ status: 401, msg: 'Unauthorised' });

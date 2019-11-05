@@ -1,13 +1,14 @@
 import { Handler } from 'express';
+import connection from '../db/connection';
 
-const connection = require('../db/connection');
+
 const { reformatDate } = require('../db/utils');
 
 
 const sendAllTopics: Handler = (req, res, next) => {
   connection('topics')
-    .select()
-    .then((topics: Topic[]) => res.send({ topics }))
+    .select<Topic[]>()
+    .then((topics) => res.send({ topics }))
     .catch(next);
 };
 
@@ -17,6 +18,7 @@ const sendArticlesByTopic: Handler = (req, res, next) => {
   const validColumns = ['username', 'title', 'article_id', 'body', 'votes', 'created_at', 'topic'];
   const offset = limit * (p - 1);
   const sortBy = validColumns.includes(req.query.sort_by) ? req.query.sort_by : 'created_at';
+
   connection('articles')
     .select(
       'articles.username AS author',
@@ -49,9 +51,8 @@ const saveNewTopic: Handler = (req, res, next) => {
   const { slug, description } = req.body;
   connection('topics')
     .insert({ slug, description })
-    .returning('*')
-    .then((topics: Topic[]) => {
-      const [topic] = topics;
+    .returning<Topic[]>('*')
+    .then(([topic]) => {
       res.status(201).send({ topic });
     })
     .catch(next);
@@ -67,9 +68,8 @@ const saveNewArticleInTopic: Handler = (req, res, next) => {
       username,
       body,
     })
-    .returning('*')
-    .then((articles: Article[]) => {
-      const [article] = articles;
+    .returning<Article[]>('*')
+    .then(([article]) => {
       res.status(201).send({ article });
     })
     .catch(next);

@@ -1,6 +1,6 @@
 import { Handler } from 'express';
+import connection from '../db/connection';
 
-const connection = require('../db/connection');
 const { formatUsers, reformatDate } = require('../db/utils');
 
 const sendAllUsers: Handler = (req, res, next) => {
@@ -13,10 +13,9 @@ const sendAllUsers: Handler = (req, res, next) => {
 const sendUserByUsername: Handler = (req, res, next) => {
   const { username } = req.params;
   connection('users')
-    .select('username', 'avatar_url', 'name')
+    .select<User[]>('username', 'avatar_url', 'name')
     .where('username', username)
-    .then((users: User[]) => {
-      const [user] = users;
+    .then(([user]) => {
       if (user) return res.send({ user });
       return Promise.reject({ status: 404, msg: 'user not found' });
     })
@@ -36,11 +35,8 @@ const saveNewUser: Handler = (req, res, next) => {
   });
   return connection('users')
     .insert([user])
-    .returning(['username', 'avatar_url', 'name'])
-    .then((users: User[]) => {
-      const [new_user] = users;
-      return res.status(201).send({ new_user });
-    })
+    .returning<User[]>(['username', 'avatar_url', 'name'])
+    .then(([new_user]) => res.status(201).send({ new_user }))
     .catch(next);
 };
 
@@ -49,11 +45,8 @@ const updateUserDetails: Handler = (req, res, next) => {
   connection('users')
     .where('username', username)
     .update(req.body)
-    .returning(['username', 'avatar_url', 'name'])
-    .then((users: User[]) => {
-      const [user] = users;
-      return user ? res.send({ user }) : Promise.reject({ status: 404, msg: 'user not found' });
-    })
+    .returning<User[]>(['username', 'avatar_url', 'name'])
+    .then(([user]) => user ? res.send({ user }) : Promise.reject({ status: 404, msg: 'user not found' }))
     .catch(next);
 };
 
@@ -91,7 +84,6 @@ const deleteUser: Handler = (req, res, next) => {
       if (response === 0) next({ status: 404, msg: 'no users exist to delete with that username' });
       else res.status(204).send({ msg: 'delete successful' });
     })
-    // })
     .catch(next);
 };
 

@@ -1,6 +1,6 @@
 import { Handler } from 'express';
+import connection from '../db/connection';
 
-const connection = require('../db/connection');
 const { reformatDate } = require('../db/utils');
 
 const sendCommentsByArticleId: Handler = (req, res, next) => {
@@ -10,12 +10,12 @@ const sendCommentsByArticleId: Handler = (req, res, next) => {
   } = req.query;
   const offset = limit * (p - 1);
   connection('comments')
-    .select('comment_id', 'votes', 'created_at', 'username AS author', 'body')
+    .select<Comment[]>('comment_id', 'votes', 'created_at', 'username AS author', 'body')
     .where('article_id', article_id)
     .limit(limit)
     .offset(offset)
     .orderBy(sort_by, order === 'asc' ? 'asc' : 'desc')
-    .then((comments: Comment[]) => {
+    .then((comments) => {
       if (!comments.length) return Promise.reject({ status: 404, msg: '404 not found' });
       reformatDate(comments);
       return res.send({ article_id, comments });
@@ -29,9 +29,8 @@ const saveNewComment: Handler = (req, res, next) => {
   const obj = { username, body, article_id };
   connection('comments')
     .insert(obj)
-    .returning('*')
-    .then((comments: Comment[]) => {
-      const [comment] = comments;
+    .returning<Comment[]>('*')
+    .then(([comment]) => {
       reformatDate(comment);
       return res.status(201).send({ comment });
     })
@@ -40,16 +39,16 @@ const saveNewComment: Handler = (req, res, next) => {
 
 const sendCommentVotes: Handler = (req, res, next) => {
   const { comment_id, article_id } = req.params;
-  const inc_votes = req.body.inc_votes ? req.body.inc_votes : 0;
+  const {inc_votes = 0} = req.body;
   if (Number.isNaN(parseInt(inc_votes, 10))) return next({ status: 400, msg: 'invalid inc_votes' });
+
   return connection('comments')
     .leftJoin('articles', 'articles.article_id', 'comments.article_id')
     .where('comment_id', comment_id)
     .andWhere('article_id', article_id)
     .increment('votes', inc_votes)
-    .returning('*')
-    .then((comments: Comment[]) => {
-      const [comment] = comments;
+    .returning<Comment[]>('*')
+    .then(([comment]) => {
       if (!comment) return Promise.reject({ status: 404, msg: '404 not found' });
 
       reformatDate(comment);
@@ -64,7 +63,7 @@ const deleteComment: Handler = (req, res, next) => {
     .where('comment_id', comment_id)
     .andWhere('article_id', article_id)
     .del()
-    .then((response: number) => {
+    .then((response) => {
       if (response === 0) return Promise.reject({ status: 404, msg: 'comment not found' });
       return res.status(204).send({ msg: 'comment deleted' });
     })
