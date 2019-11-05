@@ -1,32 +1,32 @@
-import { Request, Response, NextFunction } from 'express';
-
-const app = require('express')();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const bodyParser = require('body-parser').json();
-const cors = require('cors');
-const apiRouter = require('./routes/api');
-const secureRouter = require('./routes/secure');
-const {
+import bcrypt from 'bcrypt';
+import bodyParser from'body-parser';
+import cors from 'cors';
+import express, { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import {
   handle404, handle400, handle422, handle401, handle500,
-} = require('./errors');
-const connection = require('./db/connection');
-const JWT_SECRET = require('./passconfig');
-const { authorise } = require('./controllers/secure');
+} from './errors';
+
+import connection from './db/connection';
+import apiRouter from './routes/api';
+import secureRouter from './routes/secure';
+import { JWT_SECRET} from './passconfig';
+import { authorise } from './controllers/secure';
+
+const app = express();
 
 
 app.use(cors());
-app.use(bodyParser);
+app.use(bodyParser.json());
 app.use('/api', apiRouter);
 app.get('/', (req: Request, res: Response) => res.send('homepage'));
-// auth bonus
+// auth bonus - should this move to the secure controller really?
 app.post('/login', (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
   if (!username || !password) return next({ status: 401, msg: 'invalid login' });
   return connection('users')
-    .where('username', username)
-    .then((users: User[]) => {
-      const [user] = users;
+    .where<User[]>('username', username)
+    .then(([user]) => {
       if (user) {
         return Promise.all([bcrypt.compare(password, user.password), user]).then(
           ([passwordOk, authorisedUser]) => {

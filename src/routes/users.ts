@@ -1,4 +1,5 @@
 import express from 'express';
+import { handle405 } from  '../errors';
 
 const {
   sendAllUsers,
@@ -8,7 +9,6 @@ const {
   sendArticlesByUser,
   deleteUser,
 } = require('../controllers/users');
-const { handle405 } = require('../errors');
 
 const usersRouter = express.Router();
 

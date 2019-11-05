@@ -5,8 +5,8 @@ const { formatUsers, reformatDate } = require('../db/utils');
 
 const sendAllUsers: Handler = (req, res, next) => {
   connection('users')
-    .select('username', 'avatar_url', 'name')
-    .then((users: User[]) => res.send({ users }))
+    .select<User[]>('username', 'avatar_url', 'name')
+    .then((users) => res.send({ users }))
     .catch(next);
 };
 

@@ -1,4 +1,5 @@
 import express from 'express';
+import { handle405 } from '../errors';
 
 const {
   sendAllArticles,
@@ -12,7 +13,7 @@ const {
   sendCommentVotes,
   deleteComment,
 } = require('../controllers/comments');
-const { handle405 } = require('../errors');
+
 const { authorise } = require('../controllers/secure');
 
 

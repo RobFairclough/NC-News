@@ -1,4 +1,6 @@
 import express from 'express';
+import { handle405 } from '../errors';
+import { authorise } from '../controllers/secure';
 
 const {
   sendAllTopics,
@@ -6,8 +8,6 @@ const {
   sendArticlesByTopic,
   saveNewArticleInTopic,
 } = require('../controllers/topics');
-const { authorise } = require('../controllers/secure');
-const { handle405 } = require('../errors');
 
 const topicsRouter = express.Router();
 
