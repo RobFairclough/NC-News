@@ -16,6 +16,7 @@ module.exports = {
             },
         ],
         "@typescript-eslint/no-var-requires": 0,
+        "@typescript-eslint/ban-ts-ignore": 0,
         // some db names in snake case
         "@typescript-eslint/camelcase": 0,
         "camelcase": 0,

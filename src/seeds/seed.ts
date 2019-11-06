@@ -1,16 +1,16 @@
 import * as Knex from 'knex';
 
-const {
-  topicData, articleData, userData, commentData,
-} = require('../db/data');
-
-const {
+import {
   renameColumn,
   changeTimestampToDate,
   getArticleIds,
   setArticleIds,
   formatUsers,
-} = require('../db/utils');
+} from '../db/utils';
+
+const {
+  topicData, articleData, userData, commentData,
+} = require('../db/data');
 
 const seed  = (knex: Knex): Promise<number> => knex('topics')
   .insert(topicData)
@@ -19,11 +19,11 @@ const seed  = (knex: Knex): Promise<number> => knex('topics')
     .insert(changeTimestampToDate(renameColumn(articleData, 'created_by', 'username')))
     .returning<Article[]>('*'))
   .then((articles) => {
-    const dateChanged = changeTimestampToDate(commentData);
-    const setUsername = renameColumn(dateChanged, 'created_by', 'username');
+    const dateChangedComments = changeTimestampToDate(commentData);
+    const setUsernameComments = renameColumn(dateChangedComments, 'created_by', 'username');
     const lookup = getArticleIds(articles);
-    const setArticleId = setArticleIds(setUsername, lookup);
-    return knex('comments').insert(setArticleId);
+    const setArticleIdComments = setArticleIds(setUsernameComments as Comment[], lookup);
+    return knex('comments').insert(setArticleIdComments);
   });
 
 exports.seed = seed;

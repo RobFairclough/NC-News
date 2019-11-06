@@ -3,15 +3,12 @@ const bcrypt = require('bcrypt');
 type IDLookupObject<T> = {
   [key: string]: T;
 }
-interface DataWithTimestamp {
-  created_at: string;
-  [key: string]: any;
-}
+
+type DataWithTimestamp = Article | Comment;
 
 
 
-module.exports = {
-  changeTimestampToDate(array: DataWithTimestamp[]): DataWithTimestamp[] {
+  export function changeTimestampToDate(array: DataWithTimestamp[]): DataWithTimestamp[] {
     return array.map((element: DataWithTimestamp) => {
       const timestamp = new Date(element.created_at);
       const day = timestamp.getDate();
@@ -21,52 +18,43 @@ module.exports = {
       element.created_at = date;
       return element;
     });
-  },
+  }
 
-  renameColumn(array: object[], before: string, after: string): object[] {
-    const mapFunc = (beforeCol: string, afterCol: string, { [beforeCol]: old, ...others }): object => ({
+  export function renameColumn(array: DataWithTimestamp[], before: string, after: string): DataWithTimestamp[] {
+    // @ts-ignore 
+    const mapFunc = (beforeCol: string, afterCol: string, { [beforeCol]: old, ...others }): DataWithTimestamp => ({
       [afterCol]: old,
       ...others,
     });
-    return array.map((obj: object) => mapFunc(before, after, obj));
-  },
+    return array.map((obj: DataWithTimestamp) => mapFunc(before, after, obj));
+  }
 
-  getArticleIds(articles: Article[]): object {
+  export function getArticleIds(articles: Article[]): IDLookupObject<number> {
     const obj: IDLookupObject<number> = {};
     articles.forEach(({ title, article_id }) => {
       obj[title] = article_id;
     });
     return obj;
-  },
+  }
 
-  setArticleIds(articles: Article[], object: object): Article[] {
-    return articles.map((article: Article) => Object.keys(article).reduce(
-      (obj: any, key: string) => {
-        if (key !== 'belongs_to') obj[key] = article[key];
-        return obj;
-      },
-      { article_id: object[article.belongs_to] },
-    ));
-  },
+  export function setArticleIds(comments: Comment[], object: IDLookupObject<number>): Comment[] {
+    // @ts-ignore 
+    return comments.map((comment: Comment) => ({...comment, article_id:object[comment.belongs_to]}));
+  }
   // bad bad mutating
-  reformatDate(arr: DataWithTimestamp[] | DataWithTimestamp): void {
+  export function reformatDate(arr: DataWithTimestamp[] | DataWithTimestamp): void {
     if (Array.isArray(arr)) {
       arr.forEach((obj) => {
         obj.created_at = JSON.stringify(obj.created_at).slice(1, 11);
       });
     } else arr.created_at = JSON.stringify(arr.created_at).slice(1, 11);
-  },
+  }
 
-  // bad bad bad
-  formatUsers(rawUsers: User[] | User): User | User[] {
-    if (Array.isArray(rawUsers)) {
-      return rawUsers.map(user => ({
-        ...user,
-        password: bcrypt.hashSync(user.password, 10),
-      }));
-    }
-    const user = { ...rawUsers };
-    user.password = bcrypt.hashSync(rawUsers.password, 10);
-    return user;
-  },
-};
+  export function formatUsers(rawUsers: User | User[]): User | User[] {
+    const formatUser = (user: User): User => ({...user, password: bcrypt.hashSync(user.password, 10)})
+    if (Array.isArray(rawUsers)) return rawUsers.map(formatUser)
+    return formatUser(rawUsers);
+  }
+
+module.exports = {changeTimestampToDate, renameColumn, getArticleIds, setArticleIds, reformatDate, formatUsers };
+
