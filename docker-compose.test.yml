@@ -24,8 +24,9 @@ services:
     
   db:
     image: postgres:alpine
-    volumes: 
-      - db-test:/var/lib/postgresql/data
+    # removing volume as I don't want to persist data between builds on the test container
+    # volumes: 
+    #   - db-test:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: robfairclough
@@ -34,8 +35,8 @@ services:
       - testnet
 
 
-volumes:
-  db-test:
+# volumes:
+#   db-test:
 
 networks:
   testnet:
