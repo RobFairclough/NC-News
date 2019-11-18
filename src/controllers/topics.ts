@@ -70,6 +70,7 @@ const saveNewArticleInTopic: Handler = (req, res, next) => {
     })
     .returning<Article[]>('*')
     .then(([article]) => {
+      // todo failing tests
       res.status(201).send({ article });
     })
     .catch(next);
