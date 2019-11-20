@@ -1,4 +1,6 @@
-const { DB_URL } = process.env;
+const {
+  DB_URL, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD,
+} = process.env;
 
 // todo does this need to be in .gitignore? no confidentials stored here
 // todo docker-compose file different environments?
@@ -8,13 +10,13 @@ module.exports = {
     connection: {
       // new for docker integration - getting these environment variables from docker-compose
       // host only applicable when not developing locally
-      host: process.env.DB_HOST || 'localhost',
+      host: DB_HOST || 'localhost',
       // port is default to 5432 and I won't be changing it anyway, just putting here for clarity
-      port: process.env.DB_PORT || 5432,
+      port: DB_PORT || 5432,
       // getting DB_vars from environment means no need to change config for dev/live/test
-      database: process.env.DB_NAME || 'nc_knews_dev',
-      user: process.env.DB_USER || 'robfairclough',
-      password: process.env.DB_PASSWORD || 'postgres',
+      database: DB_NAME || 'nc_knews_dev',
+      user: DB_USER || 'robfairclough',
+      password: DB_PASSWORD || 'postgres',
     },
     migrations: {
       directory: './migrations',
@@ -30,12 +32,12 @@ module.exports = {
     connection: {
       // new for docker integration - getting these environment variables from docker-compose
       // host only applicable when not developing locally
-      host: process.env.DB_HOST || 'localhost',
+      host: DB_HOST || 'localhost',
       // port is default to 5432 and I won't be changing it anyway, just putting here for clarity
-      port: process.env.DB_PORT || 5432,
-      database: process.env.DB_NAME || 'nc_knews_test',
-      user: process.env.DB_USER || 'robfairclough',
-      password: process.env.DB_PASSWORD || 'postgres',
+      port: DB_PORT || 5432,
+      database: DB_NAME || 'nc_knews_test',
+      user: DB_USER || 'robfairclough',
+      password: DB_PASSWORD || 'postgres',
     },
     migrations: {
       directory: './migrations',
