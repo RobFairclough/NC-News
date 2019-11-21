@@ -39,7 +39,7 @@ type DataWithTimestamp = Article | Comment;
 
   export function setArticleIds(comments: Comment[], object: IDLookupObject<number>): Comment[] {
     // @ts-ignore 
-    return comments.map((comment: Comment) => ({...comment, article_id:object[comment.belongs_to]}));
+    return comments.map(({belongs_to, ...comment}: Comment) => ({...comment, article_id:object[belongs_to]}));
   }
   // bad bad mutating
   export function reformatDate(arr: DataWithTimestamp[] | DataWithTimestamp): void {
