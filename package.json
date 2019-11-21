@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon built/listen.js",
     "test": "psql -f src/db/test_setup.sql && mocha built/spec",
-    "lint": "eslint ./ --fix",
+    "lint": "eslint --ext .ts ./src",
+    "lint:fix": "eslint --ext .ts ./src --fix",
     "pre-commit": "npm t",
     "posttest": "npm run lint",
     "migrate:make": "knex migrate:make",
