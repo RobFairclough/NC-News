@@ -18,6 +18,7 @@ module.exports = {
     client: 'pg',
     connection: {
       database: 'nc_knews_test',
+      user: process.env.DB_USER || 'postgres'
     },
     migrations: {
       directory: './built/migrations',
