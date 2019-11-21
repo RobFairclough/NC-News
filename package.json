@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon built/listen.js",
-    "test": "psql -f src/db/test_setup.sql && mocha built/spec",
+    "test": "tsc && psql -f src/db/test_setup.sql && mocha built/spec",
     "lint": "eslint --ext .ts ./src",
     "lint:fix": "eslint --ext .ts ./src --fix",
     "pre-commit": "npm t",
@@ -15,7 +15,7 @@
     "migrate:rollback": "knex migrate:rollback",
     "seed:run": "knex seed:run",
     "seed": "npm run migrate:rollback && npm run migrate:latest && npm run seed:run",
-    "start": "node built/listen.js",
+    "start": "tsc && node built/listen.js",
     "seed:prod": "DB_URL=$(heroku config:get DATABASE_URL) npm run migrate:rollback:prod && npm run migrate:latest:prod && DB_URL=$(heroku config:get DATABASE_URL) knex seed:run --env production",
     "migrate:latest:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:latest --env production",
     "migrate:rollback:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:rollback --env production"
